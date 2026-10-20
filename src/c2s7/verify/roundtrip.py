@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from c2s7.ingest.layout import load_layout
+from c2s7.pathsort import sorted_paths
 from c2s7.sim.scenarios import RowResult, read_csv, run_block, summarize
 from c2s7.verify import astcmp as AC
 from c2s7.verify import s7conv_clone as SC
@@ -30,9 +31,9 @@ class RoundTrip:
 
 
 def s7conv_inputs(out: Path) -> list[Path]:
-    files = sorted((out / "tia" / "sources").glob("*"))
-    files += sorted((out / "tia" / "compat").glob("*.scl"))
-    files += sorted((out / "roundtrip" / "ob").glob("*.scl"))
+    files = sorted_paths((out / "tia" / "sources").glob("*"))
+    files += sorted_paths((out / "tia" / "compat").glob("*.scl"))
+    files += sorted_paths((out / "roundtrip" / "ob").glob("*.scl"))
     return files
 
 
@@ -72,7 +73,7 @@ def run_s7conv(out: Path, clone: Path, timers: str = "s7compat") -> RoundTrip:
 def behaviour(project_dir: Path, scenarios: Path) -> dict[str, list[RowResult]]:
     proj = load_layout(project_dir)
     out: dict[str, list[RowResult]] = {}
-    for csvp in sorted(scenarios.glob("*.csv")):
+    for csvp in sorted_paths(scenarios.glob("*.csv")):
         out[csvp.stem] = run_block(proj, csvp.stem, read_csv(csvp))
     return out
 
@@ -108,8 +109,8 @@ def classify(d: AC.Divergence) -> None:
 
 def compare_ring(out: Path, clone: Path) -> RingReport:
     parser = SC.import_s7conv(clone, "s7conv.parser")
-    orig, iss1 = AC.parse_scl_files(parser, sorted((clone / "samples" / "scl").glob("*.scl")))
-    files = sorted((out / "tia" / "sources").glob("*")) + sorted((out / "roundtrip" / "ob").glob("*.scl"))
+    orig, iss1 = AC.parse_scl_files(parser, sorted_paths((clone / "samples" / "scl").glob("*.scl")))
+    files = sorted_paths((out / "tia" / "sources").glob("*")) + sorted_paths((out / "roundtrip" / "ob").glob("*.scl"))
     ours, iss2 = AC.parse_scl_files(parser, files)
     rep = RingReport(issues=[*iss1, *iss2], raw=AC.raw_nodes(ours))
     canon = AC.Canon(AC.load_tag_addresses(clone / "samples" / "scl" / "PlcTags.csv"))

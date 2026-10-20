@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from c2s7.pathsort import sorted_paths
 from c2s7.verify import s7conv_clone as SC
 
 
@@ -28,7 +29,7 @@ def corpus_copy(out: Path, dest: Path) -> Path:
     for sub in ("tia/sources", "tia/compat"):
         d = out / sub
         if d.is_dir():
-            for f in sorted(d.iterdir()):
+            for f in sorted_paths(d.iterdir()):
                 if f.is_file() and f.suffix in (".scl", ".db", ".udt"):
                     (corpus / (f.stem + ".scl")).write_bytes(f.read_bytes())
     return corpus

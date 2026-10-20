@@ -20,7 +20,7 @@ def models() -> dict[str, object]:
     if str(REF) not in sys.path:
         sys.path.insert(0, str(REF))
     out: dict[str, object] = {}
-    for f in sorted(REF.glob("model_*.py")):
+    for f in sorted(REF.glob("model_*.py"), key=lambda p: (p.name.lower(), p.name)):
         mod = importlib.import_module(f.stem)
         spec = mod.SPEC
         out[spec.block] = spec

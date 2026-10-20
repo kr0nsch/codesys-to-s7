@@ -15,6 +15,7 @@ from pathlib import Path
 
 from c2s7.ingest.common import IngestError, read_text, split_doc
 from c2s7.model import Dut, Gvl, Origin, Pou, Project, Property, Task
+from c2s7.pathsort import sorted_paths
 from c2s7.st import nodes as A
 from c2s7.st import parser as P
 
@@ -49,18 +50,18 @@ def load_layout(root: Path, base: Path | None = None) -> Project:
     root = root.resolve()
     src = find_src(root)
     base = (base or root).resolve()
-    files = sorted(p for p in src.rglob("*.st") if p.is_file())
+    files = sorted_paths(p for p in src.rglob("*.st") if p.is_file())
     proj = Project(name=root.name, kind="st-layout", path=_rel(root, base), sha256=tree_sha256(root, files))
     pous_dir = src / "POUs"
     if pous_dir.is_dir():
-        for decl in sorted(pous_dir.rglob("*.decl.st")):
+        for decl in sorted_paths(pous_dir.rglob("*.decl.st")):
             stem = decl.name[: -len(".decl.st")]
             if "." in stem:
                 continue  # метод/аксессор
             if decl.parent.name != stem:
                 continue
             proj.pous.append(_load_pou(decl, src, base))
-    for gvl in sorted(src.rglob("*.gvl.st")) + sorted(src.rglob("*.pvl.st")):
+    for gvl in sorted_paths(src.rglob("*.gvl.st")) + sorted_paths(src.rglob("*.pvl.st")):
         text = read_text(gvl)
         name = gvl.name.split(".")[0]
         doc, _ = split_doc(text)
@@ -69,7 +70,7 @@ def load_layout(root: Path, base: Path | None = None) -> Project:
         proj.gvls.append(
             Gvl(name, parsed, Origin(_rel(gvl, base), 1), folder, persistent_list=gvl.name.endswith(".pvl.st"), doc=doc)
         )
-    for dut in sorted(src.rglob("*.dut.st")):
+    for dut in sorted_paths(src.rglob("*.dut.st")):
         text = read_text(dut)
         doc, _ = split_doc(text)
         tdecl = P.parse_type(text, _rel(dut, base))
@@ -114,14 +115,14 @@ def _load_pou(decl_path: Path, src: Path, base: Path) -> Pou:
         doc=doc,
         impl_origin=impl_origin,
     )
-    for mdecl in sorted(folder_dir.glob("*.method.decl.st")):
+    for mdecl in sorted_paths(folder_dir.glob("*.method.decl.st")):
         mname = mdecl.name[: -len(".method.decl.st")]
         mtext = P.parse_pou(read_text(mdecl), _rel(mdecl, base))
         mimpl = folder_dir / f"{mname}.method.impl.st"
         if mimpl.exists():
             mtext.body, mtext.tail = P.parse_body(read_text(mimpl), _rel(mimpl, base))
         pou.methods.append(mtext)
-    for pdecl in sorted(folder_dir.glob("*.prop.decl.st")):
+    for pdecl in sorted_paths(folder_dir.glob("*.prop.decl.st")):
         pname = pdecl.name[: -len(".prop.decl.st")]
         ptext = P.parse_pou(read_text(pdecl), _rel(pdecl, base))
         prop = Property(pname, ptext.header.return_type or A.NamedType("INT"))

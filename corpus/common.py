@@ -41,7 +41,7 @@ class CaseSpec:
 def load_specs() -> dict[str, CaseSpec]:
     out: dict[str, CaseSpec] = {}
     for lang in LANG_DIRS:
-        for d in sorted((ROOT / lang).iterdir()):
+        for d in sorted((ROOT / lang).iterdir(), key=lambda p: (p.name.lower(), p.name)):
             spec_file = d / "spec.py"
             if not spec_file.exists():
                 continue

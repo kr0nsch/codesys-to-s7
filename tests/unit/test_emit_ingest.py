@@ -13,6 +13,7 @@ import pytest
 from c2s7.api import load_input, run_migrate
 from c2s7.convert.core import Options
 from c2s7.ingest.plcopen import load_plcopen
+from c2s7.pathsort import sorted_paths
 
 REPO = Path(__file__).resolve().parents[2]
 SP17 = REPO / "tests" / "fixtures" / "sp17"
@@ -113,3 +114,14 @@ def test_application_export_tasks_and_gvl() -> None:
     assert (("RETAIN", "PERSISTENT"), "diHours") in kinds or (("PERSISTENT", "RETAIN"), "diHours") in kinds
     oop = proj.pou("FB_ProbeOop")
     assert oop is not None and oop.methods and oop.properties and oop.actions
+
+
+def test_path_order_same_on_windows_and_linux() -> None:
+    """Порядок путей не зависит от ОС: как в Windows (без учёта регистра), иначе отчёт и zip расходятся."""
+    from pathlib import PurePosixPath, PureWindowsPath
+
+    names = ["FB_Latch", "F_Convert", "b/x", "A/y", "a b/z"]
+    want = ["A/y", "a b/z", "b/x", "F_Convert", "FB_Latch"]
+    assert [p.as_posix() for p in sorted_paths(PurePosixPath(n) for n in names)] == want
+    assert [p.as_posix() for p in sorted_paths(PureWindowsPath(n) for n in names)] == want
+    assert [p.as_posix() for p in sorted(PureWindowsPath(n) for n in names)] == want

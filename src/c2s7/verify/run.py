@@ -14,6 +14,7 @@ from typing import Any
 
 from c2s7 import TOOL
 from c2s7.api import load_input
+from c2s7.pathsort import sorted_paths
 from c2s7.sim.scenarios import RowResult, read_csv, run_block
 from c2s7.verify import roundtrip as RT
 from c2s7.verify import s7conv_clone as SC
@@ -58,7 +59,7 @@ def verify(out: Path, args: argparse.Namespace) -> int:
     scen = _scenarios_dir(report, args)
     if scen is not None:
         src_proj = load_input(Path(report["c2s7"]["input"]))
-        src_runs = {c.stem: run_block(src_proj, c.stem, read_csv(c)) for c in sorted(scen.glob("*.csv"))}
+        src_runs = {c.stem: run_block(src_proj, c.stem, read_csv(c)) for c in sorted_paths(scen.glob("*.csv"))}
         prime_runs = RT.behaviour(rt.st_prime, scen)
         result["source"] = _runs(src_runs)
         result["st_prime"] = _runs(prime_runs)
