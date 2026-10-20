@@ -10,3 +10,5 @@
 *.scl linguist-language=Pascal
 tests/golden/** -text
 tests/fixtures/** -text
+corpus/**/*.cds.xml -text
+corpus/*.cds.xml -text
