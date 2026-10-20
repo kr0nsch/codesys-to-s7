@@ -1,0 +1,4 @@
+scenario,cycle,t_ms,in.iN:INT,in.iStep:INT,in.iMax:INT,out.iAcc:INT,out.xOver:BOOL,boundary,comment
+Accumulate,1,0,3,2,10,6,FALSE,FALSE,+6
+Accumulate,2,100,3,2,10,12,TRUE,FALSE,+6 → 12 > 10
+Accumulate,3,200,0,2,10,14,TRUE,FALSE,"iN = 0: тело один раз, +2"

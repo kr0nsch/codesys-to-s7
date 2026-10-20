@@ -1,0 +1,17 @@
+scenario,cycle,t_ms,in.rIn:REAL,in.iA:INT,in.iB:INT,in.iSel:INT,in.iMn:INT,in.iMx:INT,out.F_Convert:INT,out.iSum:INT,out.iQuot:INT,out.iMux:INT,out.iLim:INT,boundary,comment
+Rounding,1,0,2.5,0,1,0,0,100,3,1,0,10,3,FALSE,2.5 → 3
+Rounding,2,100,-2.5,0,1,0,0,100,-3,1,0,10,0,FALSE,−2.5 → −3
+Rounding,3,200,3.5,0,1,0,0,100,4,1,0,10,4,FALSE,3.5 → 4
+Rounding,4,300,0.4,0,1,0,0,100,0,1,0,10,0,FALSE,0.4 → 0
+Rounding,5,400,-0.6,0,1,0,0,100,-1,1,0,10,0,FALSE,−0.6 → −1
+Overflow,1,0,0,32767,1,0,0,100,0,-32768,32767,10,0,FALSE,32767 + 1 → −32768
+Overflow,2,100,0,-32768,-1,0,0,100,0,32767,-32768,10,0,FALSE,−32768 − 1 → 32767
+Division,1,0,0,7,2,0,0,100,0,9,3,10,0,FALSE,7 / 2 → 3
+Division,2,100,0,-7,2,0,0,100,0,-5,-3,10,0,FALSE,−7 / 2 → −3
+Division,3,200,0,5,0,0,0,100,0,5,0,10,0,FALSE,делитель 0 → 0
+Mux,1,0,0,0,1,0,0,100,0,1,0,10,0,FALSE,K=0
+Mux,2,100,0,0,1,1,0,100,0,1,0,20,0,FALSE,K=1
+Mux,3,200,0,0,1,2,0,100,0,1,0,30,0,FALSE,K=2
+Limit,1,0,150,0,1,0,0,100,150,1,0,10,100,FALSE,150 → MX = 100
+Limit,2,100,5,0,1,0,10,0,5,1,0,10,0,FALSE,MN 10 > MX 0 → MX = 0
+Limit,3,200,-5,0,1,0,0,100,-5,1,0,10,0,FALSE,−5 → MN = 0

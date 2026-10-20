@@ -1,0 +1,12 @@
+scenario,cycle,t_ms,in.xStartBtn:BOOL,in.xStopBtn:BOOL,in.xPermit:BOOL,in.xFault:BOOL,out.xRun:BOOL,out.xMotor:BOOL,out.xIdle:BOOL,boundary,comment
+StartStop,1,0,FALSE,FALSE,TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,покой
+StartStop,2,100,TRUE,FALSE,TRUE,FALSE,TRUE,TRUE,FALSE,FALSE,фронт пуска
+StartStop,3,200,TRUE,FALSE,TRUE,FALSE,TRUE,TRUE,FALSE,FALSE,кнопка держится
+StartStop,4,300,FALSE,TRUE,TRUE,FALSE,TRUE,TRUE,FALSE,FALSE,стоп нажат — ещё работает
+StartStop,5,400,FALSE,FALSE,TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,спад стопа: останов
+FirstCallEdge,1,0,TRUE,FALSE,TRUE,FALSE,TRUE,TRUE,FALSE,FALSE,первый вызов
+FirstCallEdge,2,100,TRUE,FALSE,TRUE,FALSE,TRUE,TRUE,FALSE,FALSE,
+NoPermit,1,0,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE,без разрешения
+NoPermit,2,100,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE,пуск без разрешения
+NoPermit,3,200,FALSE,FALSE,TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,разрешение дали
+NoPermit,4,300,TRUE,FALSE,TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,"пуск при неисправности: работает, двигатель стоит"

@@ -1,0 +1,4 @@
+scenario,cycle,t_ms,in.rRaw:REAL,in.rLo:REAL,in.rK:REAL,in.xGate:BOOL,out.F_ScaleIL:REAL,tol.F_ScaleIL,out.xGateEdge:BOOL,boundary,comment
+Scale,1,0,10,2,0.5,TRUE,4,0.0001,TRUE,FALSE,(10 − 2) · 0.5 = 4
+Scale,2,100,10,2,0.5,TRUE,4,0.0001,TRUE,FALSE,снова фронт: экземпляр инициализирован заново
+Scale,3,200,2,2,0.5,FALSE,0,0.0001,FALSE,FALSE,0

@@ -1,0 +1,9 @@
+scenario,cycle,t_ms,in.xHigh:BOOL,in.xLow:BOOL,in.xReset:BOOL,out.iFast:INT,out.iSlow:INT,out.iDone:INT,boundary,comment
+Priority,1,0,TRUE,TRUE,FALSE,0,0,0,FALSE,Wait → Fast
+Priority,2,100,TRUE,TRUE,FALSE,1,0,0,FALSE,Fast
+Priority,3,200,FALSE,TRUE,FALSE,2,0,0,FALSE,Fast → Wait (прыжок)
+Priority,4,300,FALSE,TRUE,FALSE,3,0,0,FALSE,Wait → Slow (xLow)
+Priority,5,400,FALSE,FALSE,FALSE,3,1,0,FALSE,Slow → Done
+Priority,6,500,FALSE,FALSE,FALSE,3,2,1,FALSE,Done
+Priority,7,600,FALSE,FALSE,TRUE,3,2,2,FALSE,Done → Wait
+Priority,8,700,FALSE,FALSE,FALSE,3,2,3,FALSE,Wait

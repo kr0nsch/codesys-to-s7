@@ -1,0 +1,10 @@
+scenario,cycle,t_ms,in.rLevel:REAL,in.rHigh:REAL,in.xEnable:BOOL,in.xAck:BOOL,out.xAlarm:BOOL,out.xLamp:BOOL,boundary,comment
+AlarmLatch,1,0,1,2,TRUE,FALSE,FALSE,FALSE,FALSE,уровень в норме
+AlarmLatch,2,100,3,2,TRUE,FALSE,TRUE,TRUE,FALSE,выше уставки: тревога
+AlarmLatch,3,200,1,2,TRUE,FALSE,TRUE,TRUE,FALSE,уровень вернулся — тревога держится
+AlarmLatch,4,300,1,2,TRUE,TRUE,FALSE,FALSE,FALSE,квитирование
+AlarmLatch,5,400,1,2,TRUE,FALSE,FALSE,FALSE,FALSE,покой
+DisabledHolds,1,0,3,2,TRUE,FALSE,TRUE,TRUE,FALSE,тревога
+DisabledHolds,2,100,3,2,FALSE,TRUE,TRUE,FALSE,FALSE,"выведен: квитирование не действует, лампа гаснет"
+DisabledHolds,3,200,3,2,TRUE,TRUE,FALSE,FALSE,FALSE,введён: квитирование срабатывает
+DisabledHolds,4,300,5,2,FALSE,FALSE,FALSE,FALSE,FALSE,выведен: новая тревога не ставится

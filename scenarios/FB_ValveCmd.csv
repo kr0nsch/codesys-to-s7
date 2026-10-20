@@ -1,0 +1,5 @@
+scenario,cycle,t_ms,in.xOpen:BOOL,in.iClosedPos:INT,in.iOpenPos:INT,in.iMin:INT,in.iMax:INT,out.iOut:INT,out.xAtLimit:BOOL,boundary,comment
+Select,1,0,FALSE,0,80,5,95,5,TRUE,FALSE,"закрыта: 0 → 5, на упоре"
+Select,2,100,TRUE,0,80,5,95,80,FALSE,FALSE,открыта: 80
+Select,3,200,TRUE,0,120,5,95,95,TRUE,FALSE,"120 → 95, на упоре"
+Select,4,300,FALSE,50,120,5,95,50,FALSE,FALSE,закрытое положение 50

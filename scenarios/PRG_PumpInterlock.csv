@@ -1,0 +1,9 @@
+scenario,cycle,t_ms,in.xP1Ready:BOOL,in.xP2Ready:BOOL,in.xP1Force:BOOL,in.xP2Force:BOOL,in.xEmergency:BOOL,out.xP1Run:BOOL,out.xP2Run:BOOL,out.xAnyRun:BOOL,out.xAlarm:BOOL,boundary,comment
+Alternation,1,0,TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,FALSE,готов насос 1
+Alternation,2,100,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,FALSE,готов и 2 — заблокирован
+Alternation,3,200,FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,FALSE,1 не готов: 2 подхватывает в том же цикле (сеть 2 после сети 1)
+Alternation,4,300,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,FALSE,FALSE,1 снова готов — заблокирован работающим 2
+BothAtOnce,1,0,TRUE,TRUE,FALSE,FALSE,FALSE,TRUE,FALSE,TRUE,FALSE,FALSE,первый вызов
+DoubleCoil,1,0,FALSE,FALSE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,FALSE,FALSE,оба в работе — тревога сети 4 перезаписана
+DoubleCoil,2,100,FALSE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,аварийная кнопка
+DoubleCoil,3,200,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,сброс

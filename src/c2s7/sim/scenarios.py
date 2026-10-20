@@ -68,8 +68,8 @@ def read_csv(path: Path) -> list[Row]:
             if m:
                 cols.append((i, h.split(".", 1)[0], m.group("path"), m.group("type")))
         tol_idx = {header[i][4:]: i for i in range(len(header)) if header[i].startswith("tol.")}
-        bidx = header.index("boundary")
-        cidx = header.index("comment")
+        bidx = header.index("boundary") if "boundary" in header else None  # трасса oracle-codesys.csv — без них
+        cidx = header.index("comment") if "comment" in header else None
         for rec in rd:
             ins: dict[str, tuple[str, Any]] = {}
             outs: dict[str, tuple[str, Any, float]] = {}
@@ -82,8 +82,9 @@ def read_csv(path: Path) -> list[Row]:
                 else:
                     tol = float(rec[tol_idx[p]]) if p in tol_idx and rec[tol_idx[p]] else 0.0
                     outs[p] = (typ, parse_value(typ, cell), tol)
+            boundary = bidx is not None and rec[bidx].strip().upper() == "TRUE"
             rows.append(
-                Row(rec[0], int(rec[1]), int(rec[2]), ins, outs, rec[bidx].strip().upper() == "TRUE", rec[cidx])
+                Row(rec[0], int(rec[1]), int(rec[2]), ins, outs, boundary, rec[cidx] if cidx is not None else "")
             )
     return rows
 
@@ -185,6 +186,15 @@ def _const(v: Any) -> A.Literal:
     if isinstance(v, str):
         return A.Literal("string", f"'{v}'", v)
     return A.Literal("int", str(v), v)
+
+
+def read_trace(path: Path, tol: float = 1e-4) -> list[Row]:
+    """Трасса oracle-codesys.csv (R2): один экземпляр на всю трассу, допуск REAL — tol."""
+    rows = read_csv(path)
+    for r in rows:
+        r.scenario = "trace"
+        r.outputs = {k: (t, v, tol if t.upper() in ("REAL", "LREAL") else 0.0) for k, (t, v, _) in r.outputs.items()}
+    return rows
 
 
 def summarize(results: list[RowResult]) -> dict[str, Any]:

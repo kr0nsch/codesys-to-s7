@@ -8,7 +8,7 @@ from c2s7.st import nodes as A
 
 if TYPE_CHECKING:
     from c2s7.convert.core import Converter
-    from c2s7.model import Pou
+    from c2s7.model import Pou, Project
 
 
 def lower_pou(pou: Pou, conv: Converter | None = None) -> list[A.Stmt] | None:
@@ -37,3 +37,17 @@ def lower_pou(pou: Pou, conv: Converter | None = None) -> list[A.Stmt] | None:
 
         return sfc_to_st(pou, conv)
     return None
+
+
+def lower_project(project: Project) -> Project:
+    """Понижает графику и IL всех POU проекта на месте (для c2s7.sim источника); возвращает проект."""
+    from c2s7.lower.jumps import remove_jumps
+
+    for pou in project.pous:
+        if pou.language != "ST" or pou.actions:
+            stmts = lower_pou(pou, None)
+            if stmts is not None:
+                pou.text.body = stmts
+        elif any(isinstance(s, A.Jump | A.Label) for s in pou.text.body):
+            pou.text.body = remove_jumps(pou.text.body).stmts
+    return project

@@ -530,6 +530,11 @@ class Sim:
         lv, lt = self.eval(e.left, frame)
         rv, rt = self.eval(e.right, frame)
         rtype = V.result_type(lt, rt)
+        if (rtype or "").upper() == "LTIME":  # TIME (мс) неявно расширяется до LTIME (нс)
+            if (lt or "").upper() == "TIME":
+                lv = int(lv) * 1_000_000
+            if (rt or "").upper() == "TIME":
+                rv = int(rv) * 1_000_000
         if op in ("AND", "OR", "XOR"):
             if isinstance(lv, bool) and isinstance(rv, bool):
                 return {"AND": lv and rv, "OR": lv or rv, "XOR": lv != rv}[op], "BOOL"

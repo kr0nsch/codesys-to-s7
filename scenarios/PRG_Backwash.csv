@@ -1,0 +1,19 @@
+scenario,cycle,t_ms,in.xStart:BOOL,in.xAbort:BOOL,out.iDrainTicks:INT,out.iValveTicks:INT,out.iWashTicks:INT,out.iCycles:INT,out.iRinseTicks:INT,boundary,comment
+FullCycle,1,0,FALSE,FALSE,0,0,0,0,0,FALSE,Idle
+FullCycle,2,100,TRUE,FALSE,0,0,0,0,0,FALSE,пуск: переход в конце цикла
+FullCycle,3,200,FALSE,FALSE,1,1,0,0,0,FALSE,Drain: N и S
+FullCycle,4,1200,FALSE,FALSE,2,2,0,0,0,FALSE,Drain 1 с
+FullCycle,5,2300,FALSE,FALSE,3,3,0,0,0,FALSE,Drain ≥ 2 с: переход
+FullCycle,6,2400,FALSE,FALSE,4,4,1,1,0,FALSE,"Wash: последний вызов ActDrain, импульс ActCount"
+FullCycle,7,2500,FALSE,FALSE,4,5,2,2,0,FALSE,последний вызов ActCount
+FullCycle,8,5500,FALSE,FALSE,4,6,3,2,0,FALSE,Wash ≥ 3 с: переход
+FullCycle,9,5600,FALSE,FALSE,4,7,4,2,1,FALSE,Rinse: R сбрасывает ActValve
+FullCycle,10,5700,FALSE,FALSE,4,7,4,2,2,FALSE,
+FullCycle,11,6700,FALSE,FALSE,4,7,4,2,3,FALSE,Rinse ≥ 1 с: переход
+FullCycle,12,6800,FALSE,FALSE,4,7,4,2,4,FALSE,Idle
+Abort,1,0,TRUE,FALSE,0,0,0,0,0,FALSE,пуск
+Abort,2,100,FALSE,FALSE,1,1,0,0,0,FALSE,Drain
+Abort,3,2200,FALSE,FALSE,2,2,0,0,0,FALSE,в Wash
+Abort,4,5300,FALSE,FALSE,3,3,1,1,0,FALSE,в Rinse
+Abort,5,5400,FALSE,TRUE,3,4,2,2,1,FALSE,прерывание: в Idle
+Abort,6,5500,FALSE,FALSE,3,4,2,2,2,FALSE,Idle
