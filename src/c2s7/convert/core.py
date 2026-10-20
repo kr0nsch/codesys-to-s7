@@ -70,6 +70,7 @@ class Result:
     ring: bool = False
     simaticml: dict[str, str] = field(default_factory=dict)
     lowered: dict[str, list[A.Stmt]] = field(default_factory=dict)
+    symbols: dict[str, GSym] = field(default_factory=dict)
 
 
 @dataclass
@@ -179,19 +180,40 @@ class Converter:
             manual_steps=self.manual,
             ring=self.ring,
             lowered=self.lowered,
+            symbols=self.g,
         )
         return res
 
     def _lower_graphics(self) -> None:
         """Графические языки и IL → ST AST (c2s7.lower); тело кладётся в pou.text.body."""
         from c2s7.lower import lower_pou
+        from c2s7.lower.jumps import remove_jumps
 
         for pou in self.p.pous:
+            self.pou, self.lang = pou, pou.language
+            if pou.language == "SFC" and self.opt.sfc == "graph":
+                if not self.prof.language("GRAPH"):
+                    self.add(
+                        "C2S7-PROF-LANG",
+                        pou.origin,
+                        f"GRAPH для {pou.name}",
+                        detail="GRAPH на этом CPU нет → автомат SCL",
+                    )
+                else:
+                    self.add(
+                        "C2S7-GFX-SFC",
+                        pou.origin,
+                        f"GRAPH для {pou.name}",
+                        detail="GRAPH не сгенерирован (P1) → автомат SCL",
+                    )
             if pou.language != "ST" or pou.actions:
                 stmts = lower_pou(pou, self)
                 if stmts is not None:
                     pou.text.body = stmts
                     self.lowered[pou.name] = stmts
+            elif any(isinstance(s, A.Jump | A.Label) for s in pou.text.body):
+                pou.text.body = remove_jumps(pou.text.body).stmts
+        self.pou, self.lang = None, "ST"
 
     # ================================================================= символы
     def _symbols(self) -> None:
@@ -862,6 +884,8 @@ class Converter:
         self._timer_idioms(pou)
         self._temp_reads(pou)
         init_assigns = self._sections(pou, blk)
+        if pou.net is not None and pou.net.meta is not None and pou.language in ("LD", "FBD"):
+            self._net_operands(pou)
         if pou.impl_origin is not None:
             self.origin = pou.impl_origin
         body = [*init_assigns, *self._stmts(pou.body, 10**9)]
@@ -891,6 +915,28 @@ class Converter:
             plan.full_block = blk
             plan.body = blk.body
             self.obs.append(plan)
+
+    def _net_operands(self, pou: Pou) -> None:
+        """Операнды сетей LD/FBD → обращения S7 и типы (для эмиттера FlgNet)."""
+        assert pou.net is not None and pou.net.meta is not None
+        meta = pou.net.meta
+        texts: set[str] = set(meta.edge_bits.values())
+        for net in pou.net.networks:
+            for el in net.elements:
+                if el.var and el.kind in ("contact", "coil", "in_var", "out_var", "inout_var"):
+                    texts.add(el.var)
+                if el.instance:
+                    texts.add(el.instance)
+        for text in sorted(texts):
+            try:
+                e = parse_expr(text, self.origin.file)
+            except Exception:
+                continue
+            meta.operands[text] = self._expr(e)
+            t = self.infer(e)
+            name = T.type_name(t)
+            if name:
+                meta.types[text] = name.upper()
 
     def _ob_for_program(self, prg: str) -> tuple[str, int, str, str] | None:
         for t in self.p.tasks:

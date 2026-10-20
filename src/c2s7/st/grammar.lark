@@ -69,6 +69,7 @@ enum_value: ARGNAME ":=" expr                                      -> enum_value
 
 ?stmt: plain_stmt
      | LABEL_DEF ":"                                                -> label_stmt
+     | CASE_LABEL_NAME ":"                                          -> label_stmt
 
 case_stmts: plain_stmt*
 

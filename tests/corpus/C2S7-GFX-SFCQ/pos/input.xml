@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP17 Patch 3" creationDateTime="2026-10-19T00:00:00"/>
+  <contentHeader name="c.project" modificationDateTime="2026-10-19T00:00:00">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1"/>
+      </fbd>
+      <ld>
+        <scaling x="1" y="1"/>
+      </ld>
+      <sfc>
+        <scaling x="1" y="1"/>
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation/>
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes/>
+    <pous>
+      <pou name="PRG_S" pouType="program">
+        <interface>
+          <inputVars>
+            <variable name="go">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="n">
+              <type>
+                <INT/>
+              </type>
+            </variable>
+          </outputVars>
+        </interface>
+        <actions>
+          <action name="ActL">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">n := n + 1;
+</xhtml>
+              </ST>
+            </body>
+            <addData/>
+          </action>
+        </actions>
+        <body>
+          <SFC>
+            <step localId="0" initialStep="true" name="Init">
+              <position x="0" y="0"/>
+              <connectionPointIn/>
+              <connectionPointOut formalParameter="sfc"/>
+              <connectionPointOutAction formalParameter="x"/>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">Init</attribute>
+                    <attribute guid="6844a48e-46c2-4cc8-a185-a478f3b99cc0">TRUE</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </step>
+            <actionBlock localId="1">
+              <position x="0" y="0"/>
+              <connectionPointIn>
+                <connection refLocalId="0"/>
+              </connectionPointIn>
+              <action localId="2" qualifier="L" duration="T#1S" indicator="">
+                <relPosition x="0" y="0"/>
+                <reference name="ActL"/>
+                <connectionPointOut/>
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                    <attributes xmlns="">
+                      <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">ActL</attribute>
+                      <attribute guid="e174fc0d-80b0-4a9e-a530-ca239c249a50">L</attribute>
+                    </attributes>
+                  </data>
+                </addData>
+              </action>
+            </actionBlock>
+            <inVariable localId="3">
+              <position x="0" y="0"/>
+              <connectionPointOut/>
+              <expression>go</expression>
+            </inVariable>
+            <transition localId="4">
+              <position x="0" y="0"/>
+              <connectionPointIn>
+                <connection refLocalId="0" formalParameter="sfc"/>
+              </connectionPointIn>
+              <condition>
+                <connectionPointIn>
+                  <connection refLocalId="3"/>
+                </connectionPointIn>
+              </condition>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">go</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </transition>
+            <jumpStep localId="5" targetName="Init">
+              <position x="0" y="0"/>
+              <connectionPointIn>
+                <connection refLocalId="4"/>
+              </connectionPointIn>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">Init</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </jumpStep>
+          </SFC>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">PROGRAM PRG_S
+VAR_INPUT
+    go : BOOL;
+END_VAR
+VAR_OUTPUT
+    n : INT;
+END_VAR
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations/>
+  </instances>
+</project>

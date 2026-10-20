@@ -41,19 +41,7 @@ def test_registry_complete() -> None:
         assert 0 <= mn <= mode <= mx
 
 
-PENDING_STAGE_B = {
-    "C2S7-GFX-ENO",
-    "C2S7-GFX-GOTO",
-    "C2S7-GFX-DOUBLECOIL",
-    "C2S7-GFX-CFCFB",
-    "C2S7-GFX-EDGE",
-    "C2S7-GFX-SFCQ",
-    "C2S7-GFX-SFC",
-    "C2S7-GFX-SCL",
-    "C2S7-GFX-ORDER",
-    "C2S7-IL",
-    "C2S7-PROF-LANG",
-}
+PENDING_STAGE_B: set[str] = set()
 
 
 def test_every_rule_has_corpus() -> None:

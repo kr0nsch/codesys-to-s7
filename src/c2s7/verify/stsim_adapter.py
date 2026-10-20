@@ -3,7 +3,8 @@
 Тесты coUnit строит `s7conv gen-tests <сценарии> --corpus <копия tia/sources с расширением .scl>`
 (имена сопоставляются по нашему выходу, ТЗ M10), исполняются наборы `*_ScenarioTest` против
 раскладки ST′ (выход `s7conv convert` на наших исходниках TIA). Семантика F_TRIG — как в S7
-(так ведёт себя CODESYS 3.5.17.30, проба M0). Это модель, не ПЛК: окончательный результат — CODESYS Control Win (режим R2, extras).
+(так ведёт себя CODESYS 3.5.17.30, проба M0). Это модель, не ПЛК: окончательный результат —
+CODESYS Control Win (режим R2, extras).
 """
 
 from __future__ import annotations

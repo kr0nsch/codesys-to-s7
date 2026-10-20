@@ -14,6 +14,16 @@ if TYPE_CHECKING:
 def lower_pou(pou: Pou, conv: Converter | None = None) -> list[A.Stmt] | None:
     """Тело POU в ST AST или None, если POU уже на ST без действий."""
     lang = pou.language
+    for act in pou.actions:
+        if act.language == "IL" and act.il is not None:
+            from c2s7.lower.il import il_to_st
+
+            act.body = il_to_st(act.il, pou, conv)
+            act.language = "ST"
+        elif act.language not in ("ST", "IL") and conv is not None:
+            conv.add(
+                "C2S7-LIB", act.origin or pou.origin, f"действие {act.name}: графический язык действия не переводится"
+            )
     if lang == "IL" and pou.il is not None:
         from c2s7.lower.il import il_to_st
 

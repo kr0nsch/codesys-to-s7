@@ -8,6 +8,7 @@ vendorElement networktitle; FBD — сети по `localId div 10^10`; CFC — �
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Any
 
 
 @dataclass
@@ -63,6 +64,7 @@ class NetBody:
     language: str  # LD | FBD | CFC
     networks: list[Network] = field(default_factory=list)
     pages: int = 0
+    meta: Any = None  # c2s7.lower.net.NetMeta после понижения (биты фронтов, обратные связи)
 
     def all_elements(self) -> dict[str, Element]:
         out: dict[str, Element] = {}

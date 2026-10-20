@@ -1,0 +1,6 @@
+PROGRAM PRG_S
+VAR
+    i : INT;
+END_VAR
+i := i + 1;
+END_PROGRAM

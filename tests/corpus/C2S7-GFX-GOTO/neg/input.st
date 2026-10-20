@@ -1,0 +1,12 @@
+FUNCTION_BLOCK FB_J
+VAR_INPUT
+    a : BOOL;
+END_VAR
+VAR
+    i : INT;
+END_VAR
+IF NOT a THEN
+    i := 1;
+END_IF
+i := i + 2;
+END_FUNCTION_BLOCK

@@ -1,0 +1,14 @@
+{
+  "rule": "C2S7-PROF-LANG",
+  "pos_min": 1,
+  "neg": 0,
+  "options": {
+    "sfc": "graph"
+  },
+  "options_pos": {
+    "cpu": "s7-1200"
+  },
+  "options_neg": {
+    "cpu": "s7-1500"
+  }
+}

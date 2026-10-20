@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP17 Patch 3" creationDateTime="2026-10-19T00:00:00"/>
+  <contentHeader name="c.project" modificationDateTime="2026-10-19T00:00:00">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1"/>
+      </fbd>
+      <ld>
+        <scaling x="1" y="1"/>
+      </ld>
+      <sfc>
+        <scaling x="1" y="1"/>
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation/>
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes/>
+    <pous>
+      <pou name="FB_ProbeFbdEno" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="xEn">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="iSp">
+              <type>
+                <INT/>
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="iOut">
+              <type>
+                <INT/>
+              </type>
+            </variable>
+            <variable name="xMoved">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+          </outputVars>
+        </interface>
+        <body>
+          <FBD>
+            <vendorElement localId="10000000000">
+              <position x="0" y="0"/>
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">FBD Implementation Attributes</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbd/implementationattributes" handleUnknown="implementation">
+                  <fbdattributes xmlns="">
+                    <attribute name="BoxInputFlagsSupported" value="true"/>
+                  </fbdattributes>
+                </data>
+              </addData>
+            </vendorElement>
+            <inVariable localId="10000000001">
+              <position x="0" y="0"/>
+              <connectionPointOut/>
+              <expression>iSp</expression>
+            </inVariable>
+            <block localId="10000000002" typeName="MOVE">
+              <position x="0" y="0"/>
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn/>
+                </variable>
+                <variable formalParameter="In1">
+                  <connectionPointIn>
+                    <connection refLocalId="10000000001"/>
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables/>
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut/>
+                </variable>
+                <variable formalParameter="Out1">
+                  <connectionPointOut/>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/inputparamtypes" handleUnknown="implementation">
+                  <InputParamTypes xmlns=""/>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/outputparamtypes" handleUnknown="implementation">
+                  <OutputParamTypes xmlns=""/>
+                </data>
+              </addData>
+            </block>
+            <outVariable localId="10000000003">
+              <position x="0" y="0"/>
+              <connectionPointIn>
+                <connection refLocalId="10000000002" formalParameter="ENO"/>
+              </connectionPointIn>
+              <expression>xMoved</expression>
+            </outVariable>
+            <outVariable localId="10000000004">
+              <position x="0" y="0"/>
+              <connectionPointIn>
+                <connection refLocalId="10000000002" formalParameter="Out1"/>
+              </connectionPointIn>
+              <expression>iOut</expression>
+            </outVariable>
+          </FBD>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+            <InterfaceAsPlainText>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_ProbeFbdEno
+VAR_INPUT
+    xEn : BOOL;
+    iSp : INT;
+END_VAR
+VAR_OUTPUT
+    iOut : INT;
+    xMoved : BOOL;
+END_VAR
+</xhtml>
+            </InterfaceAsPlainText>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations/>
+  </instances>
+</project>
