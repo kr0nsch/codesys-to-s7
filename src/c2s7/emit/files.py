@@ -231,6 +231,7 @@ def write_zip(out: Path, root: Path, files: list[str]) -> None:
         for rel in sorted(files):
             info = zipfile.ZipInfo(rel, date_time=FIXED_ZIP_TIME)
             info.external_attr = 0o644 << 16
+            info.create_system = 3  # иначе в Windows 0, в Linux 3 — байты zip расходятся
             info.compress_type = zipfile.ZIP_STORED
             z.writestr(info, (root / rel).read_bytes())
 

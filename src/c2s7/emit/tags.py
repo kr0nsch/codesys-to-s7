@@ -69,6 +69,7 @@ def _normalize_zip(data: bytes) -> bytes:
                 body = _MODIFIED.sub(_STAMP, body.replace(b"\r\n", b"\n"))
             ni = zipfile.ZipInfo(info.filename, date_time=(1980, 1, 1, 0, 0, 0))
             ni.external_attr = 0o644 << 16
+            ni.create_system = 3  # одинаково на Windows и Linux
             z.writestr(ni, body)
     return out.getvalue()
 
