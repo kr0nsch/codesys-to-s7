@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP17 Patch 3" creationDateTime="2026-10-20T05:42:22.2197262" />
+  <contentHeader name="zarechnaya.project" modificationDateTime="1601-01-01T03:00:00">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="PRG_Permissives" pouType="program">
+        <interface>
+          <inputVars>
+            <variable name="xStartBtn">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xStopBtn">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xPermit">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xFault">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="xRun">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xMotor">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xIdle">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </outputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> PRG_Permissives — разрешения пуска насоса промывки (LD, PROGRAM: P/N, S/R).
+
+ Поведение (модель scenarios/reference/model_PRG_Permissives.py):
+ 1. фронт xStartBtn И xPermit → xRun := TRUE (S);
+ 2. спад xStopBtn ИЛИ NOT xPermit → xRun := FALSE (R) — сеть 2 после сети 1, сброс побеждает в одном цикле;
+ 3. xMotor := xRun AND NOT xFault;
+ 4. xIdle := NOT xRun (инверсная катушка).
+ Фронты — R_TRIG/F_TRIG CODESYS по переменной; первый вызов: память фронта FALSE.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <LD>
+            <leftPowerRail localId="0">
+              <position x="0" y="0" />
+              <connectionPointOut formalParameter="none" />
+            </leftPowerRail>
+            <comment localId="1" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </content>
+            </comment>
+            <vendorElement localId="2">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Пуск по фронту</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="3" negated="false" storage="none" edge="rising">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xStartBtn</variable>
+            </contact>
+            <contact localId="4" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="3" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xPermit</variable>
+            </contact>
+            <coil localId="5" negated="false" storage="set">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="4" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xRun</variable>
+            </coil>
+            <comment localId="6" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </content>
+            </comment>
+            <vendorElement localId="7">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Стоп по спаду или без разрешения</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="8" negated="false" storage="none" edge="falling">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xStopBtn</variable>
+            </contact>
+            <contact localId="9" negated="true" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xPermit</variable>
+            </contact>
+            <coil localId="10" negated="false" storage="reset">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="8" />
+                <connection refLocalId="9" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xRun</variable>
+            </coil>
+            <comment localId="11" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </content>
+            </comment>
+            <vendorElement localId="12">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Двигатель</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="13" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xRun</variable>
+            </contact>
+            <contact localId="14" negated="true" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="13" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xFault</variable>
+            </contact>
+            <coil localId="15" negated="false" storage="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="14" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xMotor</variable>
+            </coil>
+            <comment localId="16" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </content>
+            </comment>
+            <vendorElement localId="17">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Простой</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="18" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xRun</variable>
+            </contact>
+            <coil localId="19" negated="true" storage="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="18" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>xIdle</variable>
+            </coil>
+            <rightPowerRail localId="2147483646">
+              <position x="0" y="0" />
+              <connectionPointIn />
+            </rightPowerRail>
+          </LD>
+        </body>
+        <addData />
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+</project>

@@ -1,0 +1,16 @@
+{
+  "format": "oracle-codesys/1",
+  "tool": "c2s7 0.1.0 tools/codesys/trace.py",
+  "codesys": "3.5.17.30",
+  "device": "CODESYS Control Win V3 (4096, 0000 0001, 3.5.17.30)",
+  "date": "2026-10-20",
+  "source_sha256": "64c7c69dd1a1bb00d2e2cfca007b95589d4b41573dfde7da8a7737d229070459",
+  "task": "TraceTask",
+  "period_ms": 10,
+  "cycles": 31,
+  "scenarios": [
+    "Select"
+  ],
+  "regime": "R2",
+  "inputs_from": "scenarios/FB_ValveCmd.csv (строка держится до t_ms следующей)"
+}

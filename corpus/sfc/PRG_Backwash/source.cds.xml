@@ -1,0 +1,468 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP17 Patch 3" creationDateTime="2026-10-20T05:42:22.2931425" />
+  <contentHeader name="zarechnaya.project" modificationDateTime="1601-01-01T03:00:00">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="PRG_Backwash" pouType="program">
+        <interface>
+          <inputVars>
+            <variable name="xStart">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xAbort">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="iDrainTicks">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iValveTicks">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iWashTicks">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iCycles">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iRinseTicks">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </outputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> PRG_Backwash — промывка фильтра (SFC, PROGRAM: таймауты, N/S/R/P).
+
+ Шаги: Idle (начальный) → [xStart] → Drain → [Drain.t &gt;= T#2S] → Wash → [Wash.t &gt;= T#3S] → Rinse →
+ [Rinse.t &gt;= T#1S OR xAbort] → Idle.
+ Действия (IEC): Drain — N ActDrain (iDrainTicks += 1), S ActValve (iValveTicks += 1);
+ Wash — N ActWash (iWashTicks += 1), P ActCount (iCycles += 1); Rinse — R ActValve, N ActRinse (iRinseTicks += 1).
+ Порядок цикла — справка CODESYS (lower/sfc.py); IEC-действие исполняется ещё раз после деактивации
+ (последний вызов с Q = FALSE). entry/exit-действия в CODESYS 3.5.17 не импортируются из PLCopen
+ (M0: N), поэтому в кейсе их нет — автомат c2s7 их поддерживает (unit-тесты).</xhtml>
+          </documentation>
+        </interface>
+        <actions>
+          <action name="ActDrain">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">iDrainTicks := iDrainTicks + 1;
+</xhtml>
+              </ST>
+            </body>
+            <addData />
+          </action>
+          <action name="ActValve">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">iValveTicks := iValveTicks + 1;
+</xhtml>
+              </ST>
+            </body>
+            <addData />
+          </action>
+          <action name="ActWash">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">iWashTicks := iWashTicks + 1;
+</xhtml>
+              </ST>
+            </body>
+            <addData />
+          </action>
+          <action name="ActCount">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">iCycles := iCycles + 1;
+</xhtml>
+              </ST>
+            </body>
+            <addData />
+          </action>
+          <action name="ActRinse">
+            <body>
+              <ST>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">iRinseTicks := iRinseTicks + 1;
+</xhtml>
+              </ST>
+            </body>
+            <addData />
+          </action>
+        </actions>
+        <body>
+          <SFC>
+            <step localId="0" initialStep="true" name="Idle">
+              <position x="0" y="0" />
+              <connectionPointIn />
+              <connectionPointOut formalParameter="sfc" />
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">Idle</attribute>
+                    <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                    <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                    <attribute guid="6844a48e-46c2-4cc8-a185-a478f3b99cc0">TRUE</attribute>
+                    <attribute guid="62e1754b-7629-4e63-9cec-10ae0c536f1f">FALSE</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </step>
+            <inVariable localId="1">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>xStart</expression>
+            </inVariable>
+            <transition localId="2">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" formalParameter="sfc" />
+              </connectionPointIn>
+              <condition>
+                <connectionPointIn>
+                  <connection refLocalId="1" />
+                </connectionPointIn>
+              </condition>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">xStart</attribute>
+                    <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                    <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                    <attribute guid="62e1754b-7629-4e63-9cec-10ae0c536f1f">FALSE</attribute>
+                    <attribute guid="8294df19-5962-4dee-a874-1051dabb0e3e">0</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </transition>
+            <step localId="3" name="Drain">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="2" />
+              </connectionPointIn>
+              <connectionPointOut formalParameter="sfc" />
+              <connectionPointOutAction formalParameter="x" />
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">Drain</attribute>
+                    <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                    <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                    <attribute guid="6844a48e-46c2-4cc8-a185-a478f3b99cc0">FALSE</attribute>
+                    <attribute guid="62e1754b-7629-4e63-9cec-10ae0c536f1f">FALSE</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </step>
+            <actionBlock localId="6">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="3" />
+              </connectionPointIn>
+              <action localId="4" qualifier="N" duration="" indicator="">
+                <relPosition x="0" y="0" />
+                <reference name="ActDrain" />
+                <connectionPointOut />
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                    <attributes xmlns="">
+                      <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">ActDrain</attribute>
+                      <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                      <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                      <attribute guid="e174fc0d-80b0-4a9e-a530-ca239c249a50">N</attribute>
+                    </attributes>
+                  </data>
+                </addData>
+              </action>
+              <action localId="5" qualifier="S" duration="" indicator="">
+                <relPosition x="0" y="0" />
+                <reference name="ActValve" />
+                <connectionPointOut />
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                    <attributes xmlns="">
+                      <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">ActValve</attribute>
+                      <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                      <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                      <attribute guid="e174fc0d-80b0-4a9e-a530-ca239c249a50">S</attribute>
+                    </attributes>
+                  </data>
+                </addData>
+              </action>
+            </actionBlock>
+            <inVariable localId="7">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>Drain.t &gt;= T#2S</expression>
+            </inVariable>
+            <transition localId="8">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="3" formalParameter="sfc" />
+              </connectionPointIn>
+              <condition>
+                <connectionPointIn>
+                  <connection refLocalId="7" />
+                </connectionPointIn>
+              </condition>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">Drain.t &gt;= T#2S</attribute>
+                    <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                    <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                    <attribute guid="62e1754b-7629-4e63-9cec-10ae0c536f1f">FALSE</attribute>
+                    <attribute guid="8294df19-5962-4dee-a874-1051dabb0e3e">0</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </transition>
+            <step localId="9" name="Wash">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="8" />
+              </connectionPointIn>
+              <connectionPointOut formalParameter="sfc" />
+              <connectionPointOutAction formalParameter="x" />
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">Wash</attribute>
+                    <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                    <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                    <attribute guid="6844a48e-46c2-4cc8-a185-a478f3b99cc0">FALSE</attribute>
+                    <attribute guid="62e1754b-7629-4e63-9cec-10ae0c536f1f">FALSE</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </step>
+            <actionBlock localId="12">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="9" />
+              </connectionPointIn>
+              <action localId="10" qualifier="N" duration="" indicator="">
+                <relPosition x="0" y="0" />
+                <reference name="ActWash" />
+                <connectionPointOut />
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                    <attributes xmlns="">
+                      <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">ActWash</attribute>
+                      <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                      <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                      <attribute guid="e174fc0d-80b0-4a9e-a530-ca239c249a50">N</attribute>
+                    </attributes>
+                  </data>
+                </addData>
+              </action>
+              <action localId="11" qualifier="P" duration="" indicator="">
+                <relPosition x="0" y="0" />
+                <reference name="ActCount" />
+                <connectionPointOut />
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                    <attributes xmlns="">
+                      <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">ActCount</attribute>
+                      <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                      <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                      <attribute guid="e174fc0d-80b0-4a9e-a530-ca239c249a50">P</attribute>
+                    </attributes>
+                  </data>
+                </addData>
+              </action>
+            </actionBlock>
+            <inVariable localId="13">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>Wash.t &gt;= T#3S</expression>
+            </inVariable>
+            <transition localId="14">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="9" formalParameter="sfc" />
+              </connectionPointIn>
+              <condition>
+                <connectionPointIn>
+                  <connection refLocalId="13" />
+                </connectionPointIn>
+              </condition>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">Wash.t &gt;= T#3S</attribute>
+                    <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                    <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                    <attribute guid="62e1754b-7629-4e63-9cec-10ae0c536f1f">FALSE</attribute>
+                    <attribute guid="8294df19-5962-4dee-a874-1051dabb0e3e">0</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </transition>
+            <step localId="15" name="Rinse">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="14" />
+              </connectionPointIn>
+              <connectionPointOut formalParameter="sfc" />
+              <connectionPointOutAction formalParameter="x" />
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">Rinse</attribute>
+                    <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                    <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                    <attribute guid="6844a48e-46c2-4cc8-a185-a478f3b99cc0">FALSE</attribute>
+                    <attribute guid="62e1754b-7629-4e63-9cec-10ae0c536f1f">FALSE</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </step>
+            <actionBlock localId="18">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="15" />
+              </connectionPointIn>
+              <action localId="16" qualifier="R" duration="" indicator="">
+                <relPosition x="0" y="0" />
+                <reference name="ActValve" />
+                <connectionPointOut />
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                    <attributes xmlns="">
+                      <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">ActValve</attribute>
+                      <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                      <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                      <attribute guid="e174fc0d-80b0-4a9e-a530-ca239c249a50">R</attribute>
+                    </attributes>
+                  </data>
+                </addData>
+              </action>
+              <action localId="17" qualifier="N" duration="" indicator="">
+                <relPosition x="0" y="0" />
+                <reference name="ActRinse" />
+                <connectionPointOut />
+                <addData>
+                  <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                    <attributes xmlns="">
+                      <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">ActRinse</attribute>
+                      <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                      <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                      <attribute guid="e174fc0d-80b0-4a9e-a530-ca239c249a50">N</attribute>
+                    </attributes>
+                  </data>
+                </addData>
+              </action>
+            </actionBlock>
+            <inVariable localId="19">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>Rinse.t &gt;= T#1S OR xAbort</expression>
+            </inVariable>
+            <transition localId="20">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="15" formalParameter="sfc" />
+              </connectionPointIn>
+              <condition>
+                <connectionPointIn>
+                  <connection refLocalId="19" />
+                </connectionPointIn>
+              </condition>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">Rinse.t &gt;= T#1S OR xAbort</attribute>
+                    <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                    <attribute guid="bc882c11-1e91-4dd8-a6b8-2075724ed18b">0</attribute>
+                    <attribute guid="62e1754b-7629-4e63-9cec-10ae0c536f1f">FALSE</attribute>
+                    <attribute guid="8294df19-5962-4dee-a874-1051dabb0e3e">0</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </transition>
+            <jumpStep localId="21" targetName="Idle">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="20" />
+              </connectionPointIn>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/sfc/element" handleUnknown="implementation">
+                  <attributes xmlns="">
+                    <attribute guid="38391c6d-6d4a-42f8-8ee7-9f45e5adafa8">Idle</attribute>
+                    <attribute guid="01580b27-6378-448b-8ecb-0e4b795b58d6">FALSE</attribute>
+                  </attributes>
+                </data>
+              </addData>
+            </jumpStep>
+          </SFC>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/sfcsettings" handleUnknown="implementation">
+            <SFCSettings>
+              <LibTitle>IecSfc</LibTitle>
+              <LibCompany>System</LibCompany>
+              <LibVersion>4.1.0.0</LibVersion>
+              <LibNamespace>IecSfc</LibNamespace>
+              <CalcActiveTransOnly>false</CalcActiveTransOnly>
+              <UseDefaults>false</UseDefaults>
+              <Flags>
+                <EnableLimit Declare="true" Use="false" />
+                <Init Declare="true" Use="false" />
+                <Reset Declare="true" Use="false" />
+                <QuitError Declare="true" Use="false" />
+                <Pause Declare="true" Use="false" />
+                <Error Declare="true" Use="false" />
+                <Trans Declare="true" Use="false" />
+                <ErrorStep Declare="true" Use="false" />
+                <ErrorPOU Declare="true" Use="false" />
+                <CurrentStep Declare="true" Use="false" />
+                <Tip Declare="true" Use="false" />
+                <TipMode Declare="true" Use="false" />
+                <MaxFlags Declare="true" Use="false" />
+                <SFCErrorAnalyzation Declare="true" Use="false" />
+                <SFCErrorAnalyzationTable Declare="true" Use="false" />
+                <CurrentSteps Declare="true" Use="false" />
+              </Flags>
+            </SFCSettings>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+</project>

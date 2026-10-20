@@ -1,0 +1,20 @@
+{
+  "format": "oracle-codesys/1",
+  "tool": "c2s7 0.1.0 tools/codesys/trace.py",
+  "codesys": "3.5.17.30",
+  "device": "CODESYS Control Win V3 (4096, 0000 0001, 3.5.17.30)",
+  "date": "2026-10-20",
+  "source_sha256": "8bb4e9c5f52da83026a90852f43f39df6e2a9fe6b11d50c5f5f6e8c10a0b05e2",
+  "task": "TraceTask",
+  "period_ms": 10,
+  "cycles": 115,
+  "scenarios": [
+    "Rounding",
+    "Overflow",
+    "Division",
+    "Mux",
+    "Limit"
+  ],
+  "regime": "R2",
+  "inputs_from": "scenarios/F_Convert.csv (строка держится до t_ms следующей)"
+}

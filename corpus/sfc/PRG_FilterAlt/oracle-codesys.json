@@ -1,0 +1,16 @@
+{
+  "format": "oracle-codesys/1",
+  "tool": "c2s7 0.1.0 tools/codesys/trace.py",
+  "codesys": "3.5.17.30",
+  "device": "CODESYS Control Win V3 (4096, 0000 0001, 3.5.17.30)",
+  "date": "2026-10-20",
+  "source_sha256": "9f179086c88a4bc2c48213c2a98b6fe7a2a760a62893fd3def44496f01b0b549",
+  "task": "TraceTask",
+  "period_ms": 10,
+  "cycles": 71,
+  "scenarios": [
+    "Priority"
+  ],
+  "regime": "R2",
+  "inputs_from": "scenarios/PRG_FilterAlt.csv (строка держится до t_ms следующей)"
+}

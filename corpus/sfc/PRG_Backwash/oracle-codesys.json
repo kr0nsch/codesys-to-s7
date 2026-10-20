@@ -1,0 +1,17 @@
+{
+  "format": "oracle-codesys/1",
+  "tool": "c2s7 0.1.0 tools/codesys/trace.py",
+  "codesys": "3.5.17.30",
+  "device": "CODESYS Control Win V3 (4096, 0000 0001, 3.5.17.30)",
+  "date": "2026-10-20",
+  "source_sha256": "100b3cb0f99cc6876fa9d64686308a9e34b9eff08fe2703295f08a24268b0c59",
+  "task": "TraceTask",
+  "period_ms": 10,
+  "cycles": 1232,
+  "scenarios": [
+    "FullCycle",
+    "Abort"
+  ],
+  "regime": "R2",
+  "inputs_from": "scenarios/PRG_Backwash.csv (строка держится до t_ms следующей)"
+}

@@ -1,0 +1,18 @@
+{
+  "format": "oracle-codesys/1",
+  "tool": "c2s7 0.1.0 tools/codesys/trace.py",
+  "codesys": "3.5.17.30",
+  "device": "CODESYS Control Win V3 (4096, 0000 0001, 3.5.17.30)",
+  "date": "2026-10-20",
+  "source_sha256": "5717e9591c25087b387d119e3bef40a87254d41dcd48c25ef3d1397f0948c632",
+  "task": "TraceTask",
+  "period_ms": 10,
+  "cycles": 53,
+  "scenarios": [
+    "Alternation",
+    "BothAtOnce",
+    "DoubleCoil"
+  ],
+  "regime": "R2",
+  "inputs_from": "scenarios/PRG_PumpInterlock.csv (строка держится до t_ms следующей)"
+}

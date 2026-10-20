@@ -1,0 +1,17 @@
+{
+  "format": "oracle-codesys/1",
+  "tool": "c2s7 0.1.0 tools/codesys/trace.py",
+  "codesys": "3.5.17.30",
+  "device": "CODESYS Control Win V3 (4096, 0000 0001, 3.5.17.30)",
+  "date": "2026-10-20",
+  "source_sha256": "f410eba740941e1a424a52052ce648d36239871f72e594978701159ec56f923f",
+  "task": "TraceTask",
+  "period_ms": 10,
+  "cycles": 52,
+  "scenarios": [
+    "Integrate",
+    "Clamp"
+  ],
+  "regime": "R2",
+  "inputs_from": "scenarios/FB_PiCfc.csv (строка держится до t_ms следующей)"
+}

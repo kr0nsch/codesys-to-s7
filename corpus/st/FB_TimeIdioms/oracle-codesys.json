@@ -1,0 +1,18 @@
+{
+  "format": "oracle-codesys/1",
+  "tool": "c2s7 0.1.0 tools/codesys/trace.py",
+  "codesys": "3.5.17.30",
+  "device": "CODESYS Control Win V3 (4096, 0000 0001, 3.5.17.30)",
+  "date": "2026-10-20",
+  "source_sha256": "cf52c48b7392a1110bcde2e728a656890227b5bce321b56c549fef5a192ac95f",
+  "task": "TraceTask",
+  "period_ms": 10,
+  "cycles": 303,
+  "scenarios": [
+    "PulseTrain",
+    "DelayRead",
+    "LongTime"
+  ],
+  "regime": "R2",
+  "inputs_from": "scenarios/FB_TimeIdioms.csv (строка держится до t_ms следующей)"
+}

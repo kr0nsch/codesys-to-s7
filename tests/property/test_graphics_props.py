@@ -257,6 +257,11 @@ class SfcModel:
                     self.x[s] = False
                 for s in tr.target:
                     self.x[s] = True
+        for s in self.sfc.steps:  # время шага — с цикла активирующего перехода
+            if self.x[s.name] and self.since[s.name] is None:
+                self.since[s.name] = now
+            elif not self.x[s.name]:
+                self.since[s.name] = None
 
 
 @seed(20261019)

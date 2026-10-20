@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP17 Patch 3" creationDateTime="2026-10-20T05:42:22.1846158" />
+  <contentHeader name="zarechnaya.project" modificationDateTime="1601-01-01T03:00:00">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="FB_Latch" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="xSet">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xReset">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xCu">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xCd">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xLoad">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xClk">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="xSr">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xRs">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xCuQ">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xCdQ">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="wCu">
+              <type>
+                <WORD />
+              </type>
+            </variable>
+            <variable name="wCd">
+              <type>
+                <WORD />
+              </type>
+            </variable>
+            <variable name="xRise">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xFall">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="fbSr">
+              <type>
+                <derived name="SR" />
+              </type>
+            </variable>
+            <variable name="fbRs">
+              <type>
+                <derived name="RS" />
+              </type>
+            </variable>
+            <variable name="fbCtu">
+              <type>
+                <derived name="CTU" />
+              </type>
+            </variable>
+            <variable name="fbCtd">
+              <type>
+                <derived name="CTD" />
+              </type>
+            </variable>
+            <variable name="fbRise">
+              <type>
+                <derived name="R_TRIG" />
+              </type>
+            </variable>
+            <variable name="fbFall">
+              <type>
+                <derived name="F_TRIG" />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> FB_Latch — фиксация команд пульта фильтра (ST, FUNCTION_BLOCK).
+
+ Поведение (модель scenarios/reference/model_FB_Latch.py):
+ - xSr — SR(SET1 := xSet, RESET := xReset): установка доминирует, при SET = RESET = 1 → TRUE;
+ - xRs — RS(SET := xSet, RESET1 := xReset): сброс доминирует, при SET = RESET = 1 → FALSE
+   (одноимённые блоки S7 — наоборот: C2S7-SEM-SRRS, CDS_SR/CDS_RS);
+ - CTU(CU := xCu, RESET := xReset, PV := 3): wCu — счёт фронтов, xCuQ — wCu ≥ 3; RESET обнуляет;
+ - CTD(CD := xCd, LOAD := xLoad, PV := 2): LOAD ставит 2, фронт CD уменьшает до 0 и не ниже, xCdQ — wCd = 0
+   (WORD без знака: стоит на нуле; проба M0);
+ - xRise/xFall — R_TRIG/F_TRIG по xClk; F_TRIG на первом вызове с CLK = FALSE спада не даёт (M0).</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">fbSr(SET1 := xSet, RESET := xReset, Q1 =&gt; xSr);
+fbRs(SET := xSet, RESET1 := xReset, Q1 =&gt; xRs);
+fbCtu(CU := xCu, RESET := xReset, PV := 3, Q =&gt; xCuQ, CV =&gt; wCu);
+fbCtd(CD := xCd, LOAD := xLoad, PV := 2, Q =&gt; xCdQ, CV =&gt; wCd);
+fbRise(CLK := xClk, Q =&gt; xRise);
+fbFall(CLK := xClk, Q =&gt; xFall);
+</xhtml>
+          </ST>
+        </body>
+        <addData />
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+</project>

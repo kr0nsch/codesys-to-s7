@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP17 Patch 3" creationDateTime="2026-10-20T05:42:22.1876153" />
+  <contentHeader name="zarechnaya.project" modificationDateTime="1601-01-01T03:00:00">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="FB_TimeIdioms" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="xIn">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="tIn">
+              <type>
+                <TIME />
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="xPulse">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xEarly">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xLate">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="xLong">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="fbPulse">
+              <type>
+                <derived name="TON" />
+              </type>
+            </variable>
+            <variable name="fbDelay">
+              <type>
+                <derived name="TON" />
+              </type>
+            </variable>
+          </localVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> FB_TimeIdioms — таймеры промывочного насоса (ST, FUNCTION_BLOCK).
+
+ Поведение (модель scenarios/reference/model_FB_TimeIdioms.py):
+ - fbPulse(IN := NOT fbPulse.Q, PT := T#500MS) — самосбрасывающийся таймер: Q = TRUE ровно на один вызов,
+   когда ET ≥ 500 мс, следующий вызов сбрасывает таймер (IN = FALSE), ещё следующий — запускает снова;
+   xPulse := fbPulse.Q (C2S7-SEM-TIMER-Q: S7-1200 обновляет Q и при чтении члена);
+ - xEarly := fbDelay.Q до вызова fbDelay — значение прошлого вызова; xLate := fbDelay.Q после вызова
+   fbDelay(IN := xIn, PT := T#1S) — TON: Q, когда xIn держится ≥ 1 с;
+ - xLong := tIn &gt; T#30D — литерал больше диапазона Time S7 (±24d20h): на S7-1500 → LTime, на S7-1200 —
+   impossible (C2S7-TYPE-TIME). TIME CODESYS — 32 бита без знака.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">fbPulse(IN := NOT fbPulse.Q, PT := T#500MS);
+xPulse := fbPulse.Q;
+xEarly := fbDelay.Q;
+fbDelay(IN := xIn, PT := T#1S);
+xLate := fbDelay.Q;
+xLong := tIn &gt; T#30D;
+</xhtml>
+          </ST>
+        </body>
+        <addData />
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+</project>

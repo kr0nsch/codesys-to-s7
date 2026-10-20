@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP17 Patch 3" creationDateTime="2026-10-20T05:42:22.2802919" />
+  <contentHeader name="zarechnaya.project" modificationDateTime="1601-01-01T03:00:00">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="FB_RatioCfc" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="rFlow">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="rK">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="rBias">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="rPrev">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="rNow">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="rSum">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+          </outputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> FB_RatioCfc — соотношение реагента к расходу (CFC, две страницы, порядок не по схеме).
+
+ Поведение (модель scenarios/reference/model_FB_RatioCfc.py), шаги executionOrderId:
+ 1. rPrev := m — выход MUL читается раньше его шага: значение прошлого вызова (начально 0);
+ 2. m := rFlow · rK;  3. rNow := m;  4. s := m + rBias;  5. rSum := s.
+ Страница 1 — входы и MUL, страница 2 — сумматор и выходы. REAL (float32).</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+          </ST>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/cfc" handleUnknown="implementation">
+              <CFC page-oriented="true">
+                <vendorElement localId="0">
+                  <position x="0" y="0" />
+                  <alternativeText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">page</xhtml>
+                  </alternativeText>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/cfcpage" handleUnknown="implementation">
+                      <page name="" description="" marginwidth="12" width="72" height="96" index="0" xmlns="" />
+                    </data>
+                  </addData>
+                </vendorElement>
+                <vendorElement localId="1">
+                  <position x="0" y="0" />
+                  <alternativeText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">page</xhtml>
+                  </alternativeText>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/cfcpage" handleUnknown="implementation">
+                      <page name="" description="" marginwidth="12" width="72" height="96" index="1" xmlns="" />
+                    </data>
+                  </addData>
+                </vendorElement>
+                <inVariable localId="7">
+                  <position x="0" y="0" />
+                  <connectionPointOut>
+                    <expression />
+                  </connectionPointOut>
+                  <expression>rFlow</expression>
+                </inVariable>
+                <connector localId="6" name="">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <connection refLocalId="7" formalParameter="rFlow" />
+                  </connectionPointIn>
+                </connector>
+                <inVariable localId="9">
+                  <position x="0" y="0" />
+                  <connectionPointOut>
+                    <expression />
+                  </connectionPointOut>
+                  <expression>rK</expression>
+                </inVariable>
+                <connector localId="8" name="">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <connection refLocalId="9" formalParameter="rK" />
+                  </connectionPointIn>
+                </connector>
+                <block localId="5" executionOrderId="2" typeName="MUL">
+                  <position x="0" y="0" />
+                  <inputVariables>
+                    <variable formalParameter="In1">
+                      <connectionPointIn>
+                        <relPosition x="0" y="0" />
+                        <connection refLocalId="6" />
+                      </connectionPointIn>
+                    </variable>
+                    <variable formalParameter="In2">
+                      <connectionPointIn>
+                        <relPosition x="0" y="1" />
+                        <connection refLocalId="8" />
+                      </connectionPointIn>
+                    </variable>
+                  </inputVariables>
+                  <inOutVariables />
+                  <outputVariables>
+                    <variable formalParameter="Out1">
+                      <connectionPointOut>
+                        <relPosition x="0" y="0" />
+                        <expression />
+                      </connectionPointOut>
+                    </variable>
+                  </outputVariables>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/cfccalltype" handleUnknown="implementation">
+                      <CallType xmlns="">operator</CallType>
+                    </data>
+                  </addData>
+                </block>
+                <connector localId="4" name="">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <connection refLocalId="5" formalParameter="" />
+                  </connectionPointIn>
+                </connector>
+                <inVariable localId="11">
+                  <position x="0" y="0" />
+                  <connectionPointOut>
+                    <expression />
+                  </connectionPointOut>
+                  <expression>rBias</expression>
+                </inVariable>
+                <connector localId="10" name="">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <connection refLocalId="11" formalParameter="rBias" />
+                  </connectionPointIn>
+                </connector>
+                <block localId="3" executionOrderId="4" typeName="ADD">
+                  <position x="0" y="0" />
+                  <inputVariables>
+                    <variable formalParameter="In1">
+                      <connectionPointIn>
+                        <relPosition x="0" y="0" />
+                        <connection refLocalId="4" />
+                      </connectionPointIn>
+                    </variable>
+                    <variable formalParameter="In2">
+                      <connectionPointIn>
+                        <relPosition x="0" y="1" />
+                        <connection refLocalId="10" />
+                      </connectionPointIn>
+                    </variable>
+                  </inputVariables>
+                  <inOutVariables />
+                  <outputVariables>
+                    <variable formalParameter="Out1">
+                      <connectionPointOut>
+                        <relPosition x="0" y="0" />
+                        <expression />
+                      </connectionPointOut>
+                    </variable>
+                  </outputVariables>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/cfccalltype" handleUnknown="implementation">
+                      <CallType xmlns="">operator</CallType>
+                    </data>
+                  </addData>
+                </block>
+                <connector localId="2" name="">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <connection refLocalId="3" formalParameter="" />
+                  </connectionPointIn>
+                </connector>
+                <connector localId="12" name="">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <connection refLocalId="5" formalParameter="" />
+                  </connectionPointIn>
+                </connector>
+                <connector localId="13" name="">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <connection refLocalId="5" formalParameter="" />
+                  </connectionPointIn>
+                </connector>
+                <outVariable localId="14" executionOrderId="1">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <relPosition x="0" y="0" />
+                    <connection refLocalId="13" />
+                  </connectionPointIn>
+                  <expression>rPrev</expression>
+                </outVariable>
+                <outVariable localId="15" executionOrderId="3">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <relPosition x="0" y="0" />
+                    <connection refLocalId="12" />
+                  </connectionPointIn>
+                  <expression>rNow</expression>
+                </outVariable>
+                <outVariable localId="16" executionOrderId="5">
+                  <position x="0" y="0" />
+                  <connectionPointIn>
+                    <relPosition x="0" y="0" />
+                    <connection refLocalId="2" />
+                  </connectionPointIn>
+                  <expression>rSum</expression>
+                </outVariable>
+              </CFC>
+            </data>
+          </addData>
+        </body>
+        <addData />
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+</project>

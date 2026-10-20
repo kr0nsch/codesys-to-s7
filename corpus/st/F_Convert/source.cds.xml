@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP17 Patch 3" creationDateTime="2026-10-20T05:42:22.166614" />
+  <contentHeader name="zarechnaya.project" modificationDateTime="1601-01-01T03:00:00">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="F_Convert" pouType="function">
+        <interface>
+          <returnType>
+            <INT />
+          </returnType>
+          <inputVars>
+            <variable name="rIn">
+              <type>
+                <REAL />
+              </type>
+            </variable>
+            <variable name="iA">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iB">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iSel">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iMn">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iMx">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="iSum">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iQuot">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iMux">
+              <type>
+                <INT />
+              </type>
+            </variable>
+            <variable name="iLim">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </outputVars>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> F_Convert — пересчёт аналоговой уставки дозатора коагулянта (ST, FUNCTION).
+
+ Поведение (по нему считает модель scenarios/reference/model_F_Convert.py):
+ - результат функции — REAL_TO_INT(rIn): половина округляется от нуля (2.5 → 3, −2.5 → −3; проба M0);
+ - iSum := iA + iB с переносом INT (32767 + 1 = −32768);
+ - iQuot := iA / iB с отбрасыванием дробной части к нулю, при iB = 0 — 0 (делитель-переменная → C2S7-SEM-DIV0);
+ - iMux := MUX(iSel, 10, 20, 30), iSel ∈ 0…2;
+ - iLim := LIMIT(iMn, результат, iMx); при MN &gt; MX результат — MX (проба M0: LIMIT(10, 5, 0) = 0).</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">F_Convert := REAL_TO_INT(rIn);
+iSum := iA + iB;
+IF iB &lt;&gt; 0 THEN
+    iQuot := iA / iB;
+ELSE
+    iQuot := 0;
+END_IF
+iMux := MUX(iSel, 10, 20, 30);
+iLim := LIMIT(iMn, F_Convert, iMx);
+</xhtml>
+          </ST>
+        </body>
+        <addData />
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+</project>
