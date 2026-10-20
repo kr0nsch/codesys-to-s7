@@ -102,3 +102,13 @@ C2S7-IO-NOMAP и пустой `IO_MAP.csv`.
 `src/DUTs/*.dut.st`, методы `*.method.decl.st`. Задачи — `tasks.json` (выход `s7conv convert`) или
 `tools/codesys/config.json` (`modes.normal.tasks`); поле `sources` вида `"Main (OB1)"` связывает
 программу с исходным OB (используется в кольце, `--ob-from-tasks`).
+
+## Уточнения по корпусу «Заречная»
+
+- UNION в схеме PLCopen tc6_0200 нет: `import_xml` с `<union>` падает. DUT корпуса создаются
+  объектами CODESYS (`create_dut` + текст объявления), их экспорт — `corpus/duts/*.cds.xml`.
+- Форма SFC, где ветви альтернативы оканчиваются прыжком без схождения, CODESYS 3.5.17 при
+  `import_xml` пропускает молча (объект и его действия не создаются). Рабочая форма — схождение
+  ветвей и прыжок после него (как в пробе M0).
+- GVL с RETAIN/PERSISTENT без отдельного списка Persistent Variables даёт предупреждение C244
+  («Приложение не содержит VAR_PERSISTENT-списка»), сборку не останавливает.

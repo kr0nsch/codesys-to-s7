@@ -53,12 +53,53 @@ S7Compat 7 + GVL 7 + DUT 7), `scenarios/` (6 наборов, 39 сценарие
 | `c2s7.sim`, ST′ (обратный перевод нашего SCL) | 39/39 | 263/263 |
 | stsim s7-to-codesys, ST′ + `gen-tests` | 39/39 тестов в 6 наборах | — |
 
-R1/R2 в CODESYS Control Win — `docs/TEST_REPORT.md`.
+| CODESYS Control Win 3.5.17.30, ST′ + coUnit из `s7conv gen-tests` (R1) | 39/39 тестов в 6 наборах | — |
+
+R2 «фиксированный цикл» в Control Win: трассы источника (ST s7-to-codesys) и ST′ (`s7conv
+--timers standard` из нашего SCL), по 6 блоков, 50 739 циклов каждая; c2s7.sim повторяет обе по
+записанным отметкам времени без расхождений (487 точек сравнения на трассу). Трассы —
+`tests/oracle/ring/`, тест — `tests/ring/test_ring_traces.py`.
 
 ## Кейс 2. Корпус «все языки» (ВОС «Заречная»)
 
-13 POU на шести языках, собраны в CODESYS 3.5.17.30 и выгружены как эталон `source.cds.xml`.
-Описание, классы конструкций и эквивалентность — раздел ниже (этап C).
+Вымышленная фильтровальная станция; DSL — `corpus/<язык>/<кейс>/spec.py`, общие объекты —
+`corpus/common.py`, вход демо — `corpus/zarechnaya.xml` (все 13 POU + GVL, DUT, обвязка).
+
+| POU | Язык | Что проверяет | Цель c2s7 | Классы (S7-1500) |
+|---|---|---|---|---|
+| F_Convert | ST | REAL_TO_INT на половине, перенос, деление на 0, MUX, LIMIT при MN > MX | SCL | verify: ROUND, LIMIT, MUX, DIV0 |
+| FB_Latch | ST | SR/RS при SET = RESET = 1, CTU/CTD, R/F_TRIG | SCL + CDS_SR/CDS_RS | review: SRRS, CTR |
+| FB_TimeIdioms | ST | самосбрасывающийся таймер, чтение Q до вызова, TIME > 24 сут | SCL | review: TIMER-Q, TYPE-TIME |
+| FB_LevelAlarm | FBD | 4 сети, Jump/Label, отрицание входа | FlgNet FBD | auto |
+| FB_ValveCmd | FBD | MOVE/SEL/LIMIT (без EN/ENO — M0: N) | SCL (SEL/LIMIT вне подмножества FlgNet) | review: GFX-SCL; verify: SEM-LIMIT |
+| PRG_Permissives | LD | P/N, S/R, инверсная катушка | FlgNet LAD + FB/DB | review: GFX-EDGE, POU-PRG |
+| PRG_PumpInterlock | LD | параллели, двойная катушка | FlgNet LAD + FB/DB | verify: GFX-DOUBLECOIL; review: POU-PRG |
+| FB_PiCfc | CFC | обратная связь (ADD сам на себя) | SCL | review: CFCFB; verify: SEM-LIMIT |
+| FB_RatioCfc | CFC | две страницы, выход читается раньше шага | SCL | review: CFCFB |
+| PRG_Backwash | SFC | таймауты шагов, N/S/R/P | SCL-автомат + FB/DB | review: GFX-SFC, ACT, POU-PRG |
+| PRG_FilterAlt | SFC | альтернатива, приоритет переходов, прыжок | SCL-автомат + FB/DB | review: GFX-SFC, ACT, POU-PRG |
+| FB_PulseCountIL | IL | JMPC назад → REPEAT | SCL | review: IL |
+| F_ScaleIL | IL | CAL, CR через ST, ФБ в функции | SCL | manual: POU-FBINFC; review: IL, SEM-TEMP |
+
+Классы по всему корпусу (S7-1500/V21): auto 385, review 35, verify 6, manual 4, impossible 0
+(manual — нет `--io-map`, наложение `%MW10`/`%MX20.3`, UNION, ФБ в функции; уровень проекта ещё даёт
+review TYPE-ALIAS/ENUM/RANGE, ADDR-MAP, RET — отчёт `migrate`).
+
+**CODESYS.** 11 POU (без IL — M0: N) приняты `import_xml`, сборка 0 ошибок, экспорт
+`source.cds.xml` семантически совпадает со `spec.py` (сети, порядок, отрицания, квалификаторы,
+`executionOrderId`, понижение в ST) — `tools/corpus/build_corpus.py`, `tests/langs`.
+
+**Эквивалентность** (`tools/corpus/corpus_check.py`, `tests/langs/test_corpus.py`), оба профиля:
+
+| Проверка | Итог |
+|---|---|
+| R1: c2s7.sim(экспорт CODESYS) против сценариев эталонных моделей | 13/13 POU, 29/29 сценариев |
+| R1: c2s7.sim(выход c2s7) — SCL → s7conv → ST′ или FlgNet → reader | 13/13 POU, 29/29 сценариев, S7-1500/V21 и S7-1200/V19 |
+| R2: трассы Control Win (11 POU, 2227 циклов) против c2s7.sim(экспорт) | 2227/2227 |
+| R2: те же трассы против c2s7.sim(выход c2s7) | 2227/2227 |
+
+Трассы — `corpus/<язык>/<кейс>/oracle-codesys.{csv,json}` (формат `oracle-codesys/1`).
+Блоки LAD/FBD проверены обратным чтением своего SimaticML — это самосогласованность.
 
 ## Кейсы 3–4
 

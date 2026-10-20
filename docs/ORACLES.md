@@ -62,13 +62,24 @@ tia/sources с расширением .scl>` → наборы `*_ScenarioTest` �
 
 Запуск: `c2s7 verify out/ring --roundtrip --oracle stsim`; тест —
 `tests/ring/test_ring.py::test_ring_stsim_second_oracle` (6 наборов, 39 тестов, 39 прошли).
+На корпусе «Заречная» stsim не используется (его наборы строятся только по сценариям кейса 1).
 
 ## CODESYS Control Win (эталон)
 
-Локально, через `tools/codesys/` (копия plc-repo-template @ `da0fc917`) и блокировку общего
-рантайма (`tools/codesys/online.py`: `FileLock` на `codesys-runtime.lock`, рантайм, запущенный
-другим проектом, используется как есть и не останавливается). Тесты — `pytest -m codesys`; без
-CODESYS они получают skip. Итоги — `docs/TEST_REPORT.md`.
+Локально, через `tools/codesys/` (копия plc-repo-template @ `da0fc917`) и общую блокировку рантайма
+(`FileLock` на `codesys-runtime.lock`; рантайм, запущенный другим проектом, используется как есть и не
+останавливается; запущенный своим прогоном — останавливается после него). Тесты — `pytest -m codesys`
+(без CODESYS — skip). Итоги — `docs/TEST_REPORT.md`.
+
+- **R1** (кейс 1): ST′ + тесты coUnit из `s7conv gen-tests` в Control Win — `tools/codesys/ring_controlwin.py`.
+- **R2** «фиксированный цикл»: стенд `PRG_Trace` в задаче TraceTask 10 мс (`tools/codesys/trace.py`):
+  строка сценария держится до t_ms следующей, на каждом цикле — входы, один вызов POU, выходы и
+  `TIME()` в массивы; хост читает массивы `read_values` пакетами по 2000. c2s7.sim повторяет все
+  циклы по записанным `t_ms`, поэтому сравнение детерминировано. Для долгих сценариев кольца выходы
+  пишутся только на первом и последнем цикле каждой строки (входы и время — на каждом цикле).
+- CodesysCompat: `tools/codesys/check_compat.py` — CDS_SR/CDS_RS против Standard.SR/RS.
+
+Трассы уточнили модель: время шага SFC отсчитывается с цикла активирующего перехода (`PROBES.md` §4).
 
 ## Графика
 
