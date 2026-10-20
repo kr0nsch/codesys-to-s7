@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import c2s7
 import pytest
+
+import c2s7
 from c2s7 import cli
 
 

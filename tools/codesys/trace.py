@@ -265,6 +265,7 @@ def corpus_streams() -> tuple[list[Stream], dict[str, Any]]:
 def run_job(label: str, streams: list[Stream], imports: list[str], objects: list[dict[str, Any]], timeout_s: float = 1500) -> tuple[dict[str, Any], list[int]] | int:
     """Стенд в Control Win: импорт/объекты + PRG_Trace в TraceTask; результат — (пакеты значений, TIME() циклов)."""
     import cdsrun
+
     import online
 
     decl, impl, nmax = trace_program(streams)

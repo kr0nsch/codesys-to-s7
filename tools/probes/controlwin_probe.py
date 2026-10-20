@@ -18,6 +18,7 @@ REPO = HERE.parents[1]
 sys.path[:0] = [str(REPO / "tools" / "codesys"), str(HERE)]
 
 import cdsrun  # noqa: E402
+
 import online  # noqa: E402
 
 F_OUT_DECL = """FUNCTION F_M0Out : INT

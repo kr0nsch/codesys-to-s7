@@ -38,6 +38,7 @@ def test_import_per_language(repo) -> None:  # type: ignore[no-untyped-def]
 
 def test_controlwin_behaviour(repo) -> None:  # type: ignore[no-untyped-def]
     import controlwin_probe
+
     import online
 
     try:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+
 from c2s7.st import nodes as A
 from c2s7.st import parser as P
 

@@ -8,6 +8,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
+
 from c2s7 import mapping, rules
 from c2s7.api import migrate
 from c2s7.convert.core import Options

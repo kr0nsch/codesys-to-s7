@@ -12,6 +12,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from hypothesis import HealthCheck, given, seed, settings
+from hypothesis import strategies as st
+
 from c2s7.api import migrate
 from c2s7.convert.core import Options
 from c2s7.ingest.plcopen import load_plcopen
@@ -21,8 +24,6 @@ from c2s7.model import Project
 from c2s7.sim.interp import Clock, Sim
 from c2s7.st import nodes as A
 from c2s7.verify.s7xml_reader import read_flgnet
-from hypothesis import HealthCheck, given, seed, settings
-from hypothesis import strategies as st
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(REPO / "tools" / "corpus")]

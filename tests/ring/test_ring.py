@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from c2s7.api import run_migrate
 from c2s7.convert.core import Options
 from c2s7.verify import roundtrip as RT

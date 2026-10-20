@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from importlib import resources
 
-import fetch_xsd as FX
 import pytest
 import yaml
+
+import fetch_xsd as FX
 from c2s7.convert import addr as AD
 from c2s7.convert.tasks import ob_priorities
 from c2s7.profiles import ProfileError, load, tia_table

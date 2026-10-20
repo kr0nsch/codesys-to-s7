@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+from hypothesis import given, settings
+from hypothesis import strategies as st
+
 from c2s7.emit.printer import Printer, scl_name
 from c2s7.st import nodes as A
 from c2s7.st import parser as P
-from hypothesis import given, settings
-from hypothesis import strategies as st
 
 ST = Printer("st")
 SCL = Printer("scl")

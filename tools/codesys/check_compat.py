@@ -21,6 +21,7 @@ for p in (HERE, REPO / "tools" / "probes", REPO / "src"):
         sys.path.insert(0, str(p))
 
 import cdsrun  # noqa: E402
+
 import online  # noqa: E402
 
 SEQ = [(0, 0), (1, 0), (0, 0), (1, 1), (0, 1), (0, 0), (1, 1), (1, 0), (1, 1), (0, 1), (1, 1), (0, 0)]

@@ -22,8 +22,9 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 sys.path[:0] = [str(REPO / "tools" / "codesys"), str(HERE)]
 
-from cdshost import cli as H  # noqa: E402
 from mig_s7_source import SOURCE  # noqa: E402
+
+from cdshost import cli as H  # noqa: E402
 
 DEFAULT_KIT = REPO.parent / "asu_TP" / "domestic-plc-gaps" / "_shared" / "media-kit"
 

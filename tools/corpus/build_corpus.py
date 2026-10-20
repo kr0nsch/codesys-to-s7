@@ -21,8 +21,9 @@ for p in (REPO / "src", REPO / "tools" / "corpus", REPO / "tools" / "probes", RE
         sys.path.insert(0, str(p))
 
 import builder as B  # noqa: E402
-from c2s7.ingest.plcopen import load_plcopen  # noqa: E402
 from semcmp import compare  # noqa: E402
+
+from c2s7.ingest.plcopen import load_plcopen  # noqa: E402
 
 WORK = REPO / "build" / "corpus"
 
@@ -53,8 +54,9 @@ def compare_all(export_root: Path | None = None) -> list[str]:
 def build(export_root: Path | None = None) -> dict[str, object]:
     """export_root — куда писать экспорты (по умолчанию — закоммиченные corpus/…; тесты пишут во временный каталог)."""
     import cdsrun
-    import online
     from corpus.common import case, load_specs
+
+    import online
 
     WORK.mkdir(parents=True, exist_ok=True)
     c = case(include_il=False)

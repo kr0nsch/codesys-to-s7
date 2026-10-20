@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+
 from c2s7.ingest.layout import load_single_st
 from c2s7.sim.interp import Clock, Sim, SimError
 

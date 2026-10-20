@@ -24,6 +24,7 @@ for p in (REPO / "src", REPO / "tools" / "corpus", REPO):
         sys.path.insert(0, str(p))
 
 import builder as B  # noqa: E402
+
 from c2s7.api import migrate  # noqa: E402
 from c2s7.convert.core import Options, Result  # noqa: E402
 from c2s7.ingest.layout import load_layout  # noqa: E402

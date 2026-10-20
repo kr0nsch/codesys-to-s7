@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 import pytest
+
 from c2s7.emit.printer import Printer
 from c2s7.ingest.plcopen import load_plcopen
 from c2s7.lower import lower_pou

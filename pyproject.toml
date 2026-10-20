@@ -67,6 +67,15 @@ ignore = [
     "SIM108", # тернарный оператор не всегда читаемее if/else
 ]
 
+[tool.ruff.lint.isort]
+# Явный список: если в пути клона есть символы glob (например «[11] …»), каталоги из `src`
+# не распознаются и порядок импортов расходится с CI.
+known-first-party = [
+    "c2s7", "build", "cds_common", "cdshost", "check_compat", "conftest", "fetch_xsd",
+    "import_sources", "make_library", "model_*", "online", "refcommon", "ring_controlwin", "run_tests",
+    "sfcmodel", "stlayout",
+]
+
 [tool.ruff.format]
 # Скрипты CODESYS форматируются вручную: форматтер ruff может добавить запятую после *args,
 # а это SyntaxError в IronPython 2.7.
