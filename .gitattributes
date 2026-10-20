@@ -1,0 +1,12 @@
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.png binary
+*.gif binary
+*.xlsx binary
+*.zip binary
+*.st linguist-language=Pascal
+*.scl linguist-language=Pascal
+tests/golden/** -text
+tests/fixtures/** -text

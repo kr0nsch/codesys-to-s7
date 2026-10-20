@@ -1,0 +1,112 @@
+# c2s7 — перенос проектов CODESYS 3.5 в Siemens S7-1200/1500 (TIA Portal).
+# tools/codesys/*.py выполняются и в IronPython 2.7 (CODESYS Scripting): для них отключены правила,
+# которые предлагают синтаксис Python 3, и mypy (кроме stlayout.py, типизированного комментариями).
+
+[project]
+name = "c2s7"
+version = "0.1.0"
+description = "Перенос проектов CODESYS 3.5 (ST, LD, FBD, CFC, SFC, IL) в Siemens S7-1200/1500: SCL, DB, UDT, SimaticML, теги, отчёт"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "kr0nsch" }]
+requires-python = ">=3.11"
+dependencies = [
+    "lark>=1.3,<2",
+    "lxml>=6.0,<7",
+    "openpyxl>=3.1,<4",
+    "PyYAML>=6.0,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.1,<10",
+    "pytest-cov>=6,<8",
+    "hypothesis>=6.170,<7",
+    "jsonschema>=4.26,<5",
+    "xmlschema>=4.3,<5",
+    "ruff==0.17.1",
+    "mypy==2.4.0",
+    "types-PyYAML",
+    "lxml-stubs",
+]
+
+[project.scripts]
+c2s7 = "c2s7.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+c2s7 = [
+    "st/*.lark",
+    "profiles/*.yaml",
+    "profiles/*.json",
+    "mapping/*.yaml",
+    "rules/*.yaml",
+    "compat/CodesysCompat/*.scl",
+    "schemas/*.json",
+    "site/assets/*",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = ["build", ".cache", "out", "tests/fixtures", "tests/golden"]
+src = ["src", "tools", "tools/codesys", "scenarios/reference", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "C4", "RUF"]
+ignore = [
+    "RUF001", # кириллица в строках (сообщения по-русски) — не опечатка
+    "RUF002", # то же в docstring
+    "RUF003", # то же в комментариях
+    "SIM108", # тернарный оператор не всегда читаемее if/else
+]
+
+[tool.ruff.format]
+# Скрипты CODESYS форматируются вручную: форматтер ruff может добавить запятую после *args,
+# а это SyntaxError в IronPython 2.7.
+exclude = ["tools/codesys/*.py"]
+
+[tool.ruff.lint.per-file-ignores]
+"tools/codesys/*.py" = ["UP", "SIM", "C4", "B904", "RUF005", "RUF012", "E501"]
+"corpus/**/spec.py" = ["E501"]
+"tools/probes/probe_specs.py" = ["E501"]
+"tools/corpus/builder.py" = ["E501"]
+"tests/**/*.py" = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src/c2s7", "tools/probes", "tools/corpus", "tools/fetch_xsd.py"]
+mypy_path = ["src", "tools/codesys", "tools/corpus", "tools/probes", "scenarios/reference"]
+strict = true
+warn_unreachable = true
+# Скрипты рантайма проверяются как для Windows (FileLock, msvcrt).
+platform = "win32"
+exclude = ['^tools/codesys/']
+
+[[tool.mypy.overrides]]
+module = ["openpyxl.*", "lark.*", "xmlschema.*", "hypothesis.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "scenarios/reference"]
+pythonpath = ["src", "tools", "tools/codesys", "scenarios/reference"]
+addopts = "-ra --strict-markers"
+markers = [
+    "codesys: прогон в CODESYS 3.5.17.30 и Control Win (локально, под блокировкой рантайма)",
+    "network: скачивает внешние файлы по SHA-256 (XSD, эталоны) в .cache/",
+    "slow: долгий тест",
+]
+
+[tool.coverage.run]
+source = ["c2s7"]
+branch = true
+
+[tool.coverage.report]
+show_missing = false
+skip_covered = true
