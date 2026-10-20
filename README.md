@@ -175,7 +175,7 @@ c2s7 verify out/ring --roundtrip --oracle stsim
 
 ```bash
 python -m ruff check . && python -m mypy                 # mypy --strict
-python -m pytest                                         # 272 теста; с клоном s7-to-codesys — кольцо
+python -m pytest                                         # 273 теста; с клоном s7-to-codesys — кольцо
 python -m pytest -m codesys tests/codesys                # локально, нужен CODESYS 3.5.17.30
 ```
 

@@ -15,7 +15,7 @@ python tools/check_coverage.py build/coverage.json
 | Проверка | Итог |
 |---|---|
 | ruff, ruff format, mypy --strict (77 файлов) | без замечаний |
-| pytest | 272 прошли, 5 пропущены (`-m codesys`) |
+| pytest | 273 прошли, 5 пропущены (`-m codesys`) |
 | покрытие всего | строки 90,2 %, ветви 80,2 % (порог 85/75) |
 | `c2s7/emit/simaticml` | строки 89,7 %, ветви 78,7 % |
 | `c2s7/sim` | строки 85,4 %, ветви 75,9 % |
