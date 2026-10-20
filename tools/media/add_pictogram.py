@@ -64,7 +64,7 @@ def main(argv: list[str] | None = None) -> int:
             [
                 sys.executable,
                 "-c",
-                "import pictograms, brand; pictograms.render('mig_s7', brand.THEMES['dark'] if hasattr(brand, 'THEMES') else brand.theme('dark'))",
+                "import pictograms, brand; pictograms.render('mig_s7', brand.theme('dark'))",
             ],
             cwd=str(kit),
             capture_output=True,
