@@ -78,6 +78,11 @@ exclude = ["tools/codesys/*.py"]
 "tools/probes/probe_specs.py" = ["E501"]
 "tools/corpus/builder.py" = ["E501"]
 "tests/**/*.py" = ["E501"]
+# тексты отчётов, справки CLI и таблиц: длинные русские строки не режутся
+"src/c2s7/emit/report.py" = ["E501"]
+"src/c2s7/mapping/__init__.py" = ["E501"]
+"src/c2s7/verify/run.py" = ["E501"]
+"src/c2s7/cli.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.11"

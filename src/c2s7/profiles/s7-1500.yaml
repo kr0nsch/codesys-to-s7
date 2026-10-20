@@ -1,0 +1,43 @@
+# Профиль цели S7-1500 (FW >= 2.9, STEP 7 V19/V21). Каждое значение — с источником (тест проверяет).
+id: s7-1500
+title: "S7-1500 (FW >= 2.9)"
+cpu_examples: ["CPU 1511-1 PN", "CPU 1516-3 PN/DP"]
+languages:
+  LAD: {supported: true, source: compare-2021}
+  FBD: {supported: true, source: compare-2021}
+  SCL: {supported: true, source: compare-2021}
+  STL: {supported: true, source: compare-2021}
+  GRAPH: {supported: true, source: compare-2021}
+  CFC: {supported: true, source: compare-2021}
+types:
+  LInt: {supported: true, source: compare-2021}
+  ULInt: {supported: true, source: compare-2021}
+  LWord: {supported: true, source: compare-2021}
+  LReal: {supported: true, source: compare-2021}
+  LTime: {supported: true, source: s7-1500-cycle}
+  LTOD: {supported: true, source: compare-2021}
+  LDT: {supported: true, source: compare-2021}
+  WString: {supported: true, source: guideline-1.4}
+  Date_And_Time: {supported: true, source: compare-2021}
+  DTL: {supported: true, source: compare-2021}
+  REF_TO: {supported: true, source: compare-2021, note: "не в статике FB (реестр s7-lint, SEM-REF-*) — R§4.2 [M]"}
+  Variant: {supported: true, source: guideline-1.4}
+  DB_ANY: {supported: true, source: guideline-1.4}
+retain:
+  supported: true
+  per_variable_in_optimized: true
+  source: guideline-1.4
+ob:
+  cyclic_interrupt_numbers: [30, 31, 32, 33, 34, 35, 36, 37, 38]
+  extra_numbers_from: 123
+  max_cyclic_interrupts: 20
+  priority_min: 1
+  priority_max: 26
+  comm_priority: 15
+  program_cycle_priority: 1
+  source: s7-1500-cycle
+  note: "число циклических прерываний зависит от CPU; 20 — по Guideline V1.4, табл. 2-8 (извлечение текста неоднозначно, сверить)"
+sources:
+  compare-2021: "https://cache.industry.siemens.com/dl/files/648/109797648/att_1067421/v1/s71500_compare_table_en.pdf"
+  guideline-1.4: "https://cache.industry.siemens.com/dl/files/040/90885040/att_861867/v1/81318674_Programming_guideline_DOCU_v14_en.pdf"
+  s7-1500-cycle: "https://cache.industry.siemens.com/dl/files/558/59193558/att_112303/v1/s71500_cycle_and_reaction_times_function_manual_en-US_en-US.pdf"

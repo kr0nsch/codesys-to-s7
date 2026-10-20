@@ -1,0 +1,23 @@
+// CodesysCompat (c2s7): SR с семантикой CODESYS Standard — установка доминирует.
+// CODESYS SR(SET1, RESET): Q1 := SET1 OR (NOT RESET AND Q1) — справка Standard.SR; проба M0 в Control Win:
+// SET1 = RESET = TRUE даёт Q1 = TRUE. У S7 одноимённый SR — сброс доминирует (LAD-справочник 05/2010 §1.10),
+// а в SCL инструкций SR/RS нет (сравнительный список 05/2021, с. 15), поэтому — свой блок.
+FUNCTION_BLOCK "CDS_SR"
+TITLE = SR CODESYS (set dominant)
+{ S7_Optimized_Access := 'TRUE' }
+AUTHOR : c2s7
+FAMILY : CodesysCompat
+VERSION : 0.1
+   VAR_INPUT
+      SET1 : Bool;   // установка (доминирует)
+      RESET : Bool;   // сброс
+   END_VAR
+
+   VAR_OUTPUT
+      Q1 : Bool;   // состояние
+   END_VAR
+
+
+BEGIN
+	#Q1 := #SET1 OR (NOT #RESET AND #Q1);
+END_FUNCTION_BLOCK

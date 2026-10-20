@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "plc-migration-report-core/1",
+  "type": "object",
+  "required": ["format", "tool", "source", "target", "totals", "findings", "effort"],
+  "properties": {
+    "format": {"const": "plc-migration-report/1"},
+    "tool": {"type": "object", "required": ["name", "version"],
+      "properties": {"name": {"type": "string"}, "version": {"type": "string"}}},
+    "source": {"type": "object", "required": ["kind", "sha256"],
+      "properties": {
+        "kind": {"enum": ["plcopen-xml", "st-layout", "simaticml", "awl", "scl"]},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "ide": {"type": "string"}, "ide_version": {"type": "string"}}},
+    "target": {"type": "object", "required": ["profile"],
+      "properties": {"profile": {"type": "string"}, "version": {"type": "string"}}},
+    "totals": {"type": "object", "required": ["by_outcome", "by_language"],
+      "properties": {
+        "by_outcome": {"$ref": "#/$defs/counts"},
+        "by_language": {"type": "object", "additionalProperties": {"$ref": "#/$defs/counts"}}}},
+    "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+    "effort": {"type": "object", "required": ["model", "p50_h", "p90_h", "calibrated"],
+      "properties": {
+        "model": {"enum": ["triangular-mc", "mode-sum"]}, "runs": {"type": "integer"}, "seed": {"type": "integer"},
+        "p50_h": {"type": "number"}, "p90_h": {"type": "number"},
+        "calibrated": {"type": "boolean"}, "calibration": {"type": "string"}}},
+    "equivalence": {"type": "object", "required": ["oracles", "scenarios", "passed"],
+      "properties": {
+        "oracles": {"type": "array", "items": {"type": "string"}}, "regime": {"type": "string"},
+        "scenarios": {"type": "integer"}, "rows": {"type": "integer"},
+        "passed": {"type": "integer"}, "xfail": {"type": "integer"},
+        "first_divergence": {"type": ["object", "null"]}}}
+  },
+  "$defs": {
+    "outcome": {"enum": ["auto", "review", "verify", "manual", "impossible", "info"]},
+    "counts": {"type": "object", "additionalProperties": false,
+      "required": ["auto", "review", "verify", "manual", "impossible", "info"],
+      "properties": {
+        "auto": {"type": "integer", "minimum": 0}, "review": {"type": "integer", "minimum": 0},
+        "verify": {"type": "integer", "minimum": 0}, "manual": {"type": "integer", "minimum": 0},
+        "impossible": {"type": "integer", "minimum": 0}, "info": {"type": "integer", "minimum": 0}}},
+    "finding": {"type": "object", "required": ["rule", "outcome", "family_outcome", "language", "origin"],
+      "properties": {
+        "rule": {"type": "string"}, "outcome": {"type": "string"},
+        "family_outcome": {"$ref": "#/$defs/outcome"},
+        "language": {"enum": ["ST", "IL", "LD", "FBD", "CFC", "SFC", "SCL", "LAD", "STL", "GRAPH", "DECL", "PROJECT"]},
+        "pou": {"type": "string"},
+        "origin": {"type": "object", "required": ["file"],
+          "properties": {"file": {"type": "string"}, "line": {"type": "integer"},
+            "column": {"type": "integer"}, "local_id": {"type": "string"}}},
+        "minutes": {"type": "object", "required": ["min", "mode", "max"],
+          "properties": {"min": {"type": "number"}, "mode": {"type": "number"}, "max": {"type": "number"}}},
+        "related": {"type": "array", "items": {"type": "string"}},
+        "source_ref": {"type": "string"}}}
+  }
+}

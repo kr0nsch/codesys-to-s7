@@ -1,0 +1,44 @@
+# Профиль цели S7-1200 (FW 4.x, не G2). Каждое значение — с источником (тест проверяет).
+id: s7-1200
+title: "S7-1200 (FW 4.x)"
+cpu_examples: ["CPU 1214C DC/DC/DC", "CPU 1215C"]
+languages:
+  LAD: {supported: true, source: compare-2021}
+  FBD: {supported: true, source: compare-2021}
+  SCL: {supported: true, source: compare-2021}
+  STL: {supported: false, source: compare-2021, note: "«STL (not S7-1200)»"}
+  GRAPH: {supported: false, source: compare-2021}
+  CFC: {supported: false, source: compare-2021, note: "«CFC (S7-1500 only)»"}
+types:
+  LInt: {supported: false, source: compare-2021, note: "64-битные целые — сверить по своей версии прошивки"}
+  ULInt: {supported: false, source: compare-2021, note: "сверить"}
+  LWord: {supported: false, source: compare-2021, note: "сверить"}
+  LReal: {supported: true, source: s7-1200-manual}
+  LTime: {supported: false, source: compare-2021, note: "сверить"}
+  LTOD: {supported: false, source: compare-2021, note: "сверить"}
+  LDT: {supported: false, source: compare-2021, note: "сверить"}
+  WString: {supported: true, source: guideline-1.4}
+  Date_And_Time: {supported: false, source: s7-1200-manual, note: "на S7-1200 — DTL; DT по сравнительному списку сверить"}
+  DTL: {supported: true, source: s7-1200-manual}
+  REF_TO: {supported: false, source: compare-2021, note: "REF_TO/REF() — S7-1500 (сверить для FW 4.x)"}
+  Variant: {supported: true, source: guideline-1.4, note: "с FW 4.1"}
+  DB_ANY: {supported: true, source: guideline-1.4, note: "с FW 4.1"}
+retain:
+  supported: true
+  per_variable_in_optimized: true
+  memory_kb: 10
+  source: guideline-1.4
+ob:
+  cyclic_interrupt_numbers: [30, 31, 32, 33]
+  extra_numbers_from: 123
+  max_cyclic_interrupts: 4
+  priority_min: 1
+  priority_max: 26
+  comm_priority: 15
+  program_cycle_priority: 1
+  source: guideline-1.4
+  note: "4 циклических и 4 с задержкой (Guideline V1.4, табл. 2-8; R§4.5 [M]) — сверить по CPU"
+sources:
+  compare-2021: "https://cache.industry.siemens.com/dl/files/648/109797648/att_1067421/v1/s71500_compare_table_en.pdf"
+  guideline-1.4: "https://cache.industry.siemens.com/dl/files/040/90885040/att_861867/v1/81318674_Programming_guideline_DOCU_v14_en.pdf"
+  s7-1200-manual: "https://cache.industry.siemens.com/dl/files/465/36932465/att_106119/v1/s71200_system_manual_en-US_en-US.pdf"

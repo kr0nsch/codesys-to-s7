@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "c2s7-migration-report/1",
+  "description": "Расширение MIGRATION_REPORT.json c2s7 поверх ядра семейства (report-core.schema.json).",
+  "type": "object",
+  "required": ["c2s7"],
+  "properties": {
+    "c2s7": {
+      "type": "object",
+      "required": ["input", "verdict", "ring", "options", "pous", "blocks", "obs", "tags", "constants", "compat", "files", "constructs"],
+      "properties": {
+        "input": {"type": "string"},
+        "verdict": {"type": "string"},
+        "ring": {"type": "boolean"},
+        "options": {"type": "object"},
+        "pous": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["pou", "language", "outcome", "findings"],
+            "properties": {
+              "pou": {"type": "string"},
+              "language": {"type": "string"},
+              "outcome": {"enum": ["auto", "review", "verify", "manual", "impossible", "info"]},
+              "findings": {"type": "integer", "minimum": 0}
+            }
+          }
+        },
+        "blocks": {"type": "array", "items": {"type": "object", "required": ["kind", "name"]}},
+        "obs": {"type": "array", "items": {"type": "object", "required": ["task", "ob", "kind"]}},
+        "tags": {"type": "integer"},
+        "constants": {"type": "integer"},
+        "compat": {"type": "array", "items": {"type": "string"}},
+        "files": {"type": "array", "items": {"type": "string"}},
+        "constructs": {"type": "integer"}
+      }
+    }
+  }
+}

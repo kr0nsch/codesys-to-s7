@@ -1,0 +1,31 @@
+# Версии TIA Portal: пространства имён SimaticML и статус в c2s7 (ТЗ M4).
+# Источник матрицы — XSD dotnetprojects/DotNetSiemensPLCToolBoxLibrary @ bbe5becc (tools/fetch_xsd.py --matrix);
+# тест сверяет этот файл с матрицей.
+source: "https://github.com/dotnetprojects/DotNetSiemensPLCToolBoxLibrary/tree/bbe5beccbadcf7497408e92883e260cc5024a874/externalDlls/siemens"
+versions:
+  V15.1: {interface: v3, flgnet: v3, scl: v2, graph: v4, access: v3, status: P1, simaticml: false}
+  V16: {interface: v4, flgnet: v4, scl: v3, graph: v5, access: v4, status: P1, simaticml: false}
+  V17: {interface: v4+v5, flgnet: v4, scl: v3, graph: v5, access: v4, status: P1, simaticml: false}
+  V18: {interface: v5, flgnet: v4, scl: v3, graph: v5, access: v4, status: P1, simaticml: false}
+  V19: {interface: v5, flgnet: v5, scl: v4, graph: v6, access: v5, status: P0, simaticml: true}
+  V20:
+    interface: v5
+    flgnet: v4
+    scl: v3
+    graph: v5
+    access: v4
+    status: excluded
+    simaticml: false
+    reason: >-
+      Папка V20 содержит набор схем как у V18, а реальный экспорт V20 пишет Graph/v5 (E§2.1); возможно,
+      пространство имён задаёт версия Openness API, а не TIA [L]. Пока не разобрано — код 2.
+  V21: {interface: v5, flgnet: v5, scl: v4, graph: v6, access: v5, status: P0, simaticml: true, reference: "bulaofen0036-coder/TIA_Portal_Openness_MCP @ e131b257 (MIT, [M])"}
+namespaces:
+  interface: "http://www.siemens.com/automation/Openness/SW/Interface/{v}"
+  flgnet: "http://www.siemens.com/automation/Openness/SW/NetworkSource/FlgNet/{v}"
+  scl: "http://www.siemens.com/automation/Openness/SW/NetworkSource/StructuredText/{v}"
+  graph: "http://www.siemens.com/automation/Openness/SW/NetworkSource/Graph/{v}"
+sd:
+  blocks_from: V20
+  types_from: V21
+  nvt_from: V19
