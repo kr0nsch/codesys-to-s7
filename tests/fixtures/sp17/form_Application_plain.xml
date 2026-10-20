@@ -1,0 +1,387 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP17 Patch 3" creationDateTime="2026-10-20T03:44:11.3266929" />
+  <contentHeader name="forms.project" modificationDateTime="1601-01-01T03:00:00">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous />
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/application" handleUnknown="implementation">
+      <resource name="Application">
+        <task name="Task_Fast" interval="PT0.01S" priority="1">
+          <pouInstance name="PRG_ProbeMain" typeName="">
+            <documentation>
+              <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+            </documentation>
+          </pouInstance>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+              <TaskSettings KindOfTask="Cyclic" Interval="10" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+              </TaskSettings>
+            </data>
+          </addData>
+        </task>
+        <task name="Task_Free" priority="20">
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/tasksettings" handleUnknown="implementation">
+              <TaskSettings KindOfTask="Freewheeling" Interval="t#20ms" IntervalUnit="ms" WithinSPSTimeSlicing="true">
+                <Watchdog Enabled="false" TimeUnit="ms" Sensitivity="1" />
+              </TaskSettings>
+            </data>
+          </addData>
+        </task>
+        <globalVars name="GVL_Probe">
+          <variable name="xFlag">
+            <type>
+              <BOOL />
+            </type>
+          </variable>
+          <variable name="iCount">
+            <type>
+              <INT />
+            </type>
+            <initialValue>
+              <simpleValue value="5" />
+            </initialValue>
+          </variable>
+          <variable name="rTotal">
+            <type>
+              <REAL />
+            </type>
+          </variable>
+          <variable name="diHours">
+            <type>
+              <DINT />
+            </type>
+          </variable>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+              <InterfaceAsPlainText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">{attribute 'qualified_only'}
+VAR_GLOBAL
+    xFlag : BOOL;
+    iCount : INT := 5;
+END_VAR
+VAR_GLOBAL RETAIN
+    rTotal : REAL;
+END_VAR
+VAR_GLOBAL PERSISTENT RETAIN
+    diHours : DINT;
+END_VAR
+</xhtml>
+              </InterfaceAsPlainText>
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/mixedattrsvarlist" handleUnknown="implementation">
+              <MixedAttrsVarList>
+                <globalVars name="GVL_Probe">
+                  <variable name="xFlag">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <variable name="iCount">
+                    <type>
+                      <INT />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="5" />
+                    </initialValue>
+                  </variable>
+                </globalVars>
+                <globalVars name="GVL_Probe" retain="true">
+                  <variable name="rTotal">
+                    <type>
+                      <REAL />
+                    </type>
+                  </variable>
+                </globalVars>
+                <globalVars name="GVL_Probe" retain="true" persistent="true">
+                  <variable name="diHours">
+                    <type>
+                      <DINT />
+                    </type>
+                  </variable>
+                </globalVars>
+              </MixedAttrsVarList>
+            </data>
+          </addData>
+        </globalVars>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/datatype" handleUnknown="implementation">
+            <dataType name="ST_Probe">
+              <baseType>
+                <struct>
+                  <variable name="a">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <variable name="b">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                </struct>
+              </baseType>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">TYPE ST_Probe :
+STRUCT
+    a : INT;
+    b : BOOL;
+END_STRUCT
+END_TYPE
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+              </addData>
+            </dataType>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="FB_ProbeOop" pouType="functionBlock">
+              <interface>
+                <inputVars>
+                  <variable name="xIn">
+                    <type>
+                      <BOOL />
+                    </type>
+                  </variable>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                      <InterfaceAsPlainText>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_ProbeOop
+VAR_INPUT
+    xIn : BOOL;
+END_VAR
+VAR
+    iState : INT;
+END_VAR
+</xhtml>
+                      </InterfaceAsPlainText>
+                    </data>
+                  </addData>
+                </inputVars>
+                <localVars>
+                  <variable name="iState">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                      <InterfaceAsPlainText>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_ProbeOop
+VAR_INPUT
+    xIn : BOOL;
+END_VAR
+VAR
+    iState : INT;
+END_VAR
+</xhtml>
+                      </InterfaceAsPlainText>
+                    </data>
+                  </addData>
+                </localVars>
+              </interface>
+              <actions>
+                <action name="ActClear">
+                  <body>
+                    <ST>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">iState := 0;
+</xhtml>
+                    </ST>
+                  </body>
+                  <addData />
+                </action>
+              </actions>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">iState := iState + 1;
+</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/method" handleUnknown="implementation">
+                  <Method name="Reset">
+                    <interface>
+                      <returnType>
+                        <BOOL />
+                      </returnType>
+                      <inputVars>
+                        <variable name="iTo">
+                          <type>
+                            <INT />
+                          </type>
+                        </variable>
+                        <addData>
+                          <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                            <InterfaceAsPlainText>
+                              <xhtml xmlns="http://www.w3.org/1999/xhtml">METHOD Reset : BOOL
+VAR_INPUT
+    iTo : INT;
+END_VAR
+</xhtml>
+                            </InterfaceAsPlainText>
+                          </data>
+                        </addData>
+                      </inputVars>
+                    </interface>
+                    <body>
+                      <ST>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">iState := iTo;
+Reset := TRUE;
+</xhtml>
+                      </ST>
+                    </body>
+                    <InterfaceAsPlainText>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">METHOD Reset : BOOL
+VAR_INPUT
+    iTo : INT;
+END_VAR
+</xhtml>
+                    </InterfaceAsPlainText>
+                    <addData />
+                  </Method>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/property" handleUnknown="implementation">
+                  <Property name="State">
+                    <interface>
+                      <returnType>
+                        <INT />
+                      </returnType>
+                    </interface>
+                    <SetAccessor>
+                      <interface />
+                      <body>
+                        <ST>
+                          <xhtml xmlns="http://www.w3.org/1999/xhtml">iState := State;
+</xhtml>
+                        </ST>
+                      </body>
+                      <InterfaceAsPlainText>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">VAR
+END_VAR
+</xhtml>
+                      </InterfaceAsPlainText>
+                      <addData />
+                    </SetAccessor>
+                    <GetAccessor>
+                      <interface />
+                      <body>
+                        <ST>
+                          <xhtml xmlns="http://www.w3.org/1999/xhtml">State := iState;
+</xhtml>
+                        </ST>
+                      </body>
+                      <InterfaceAsPlainText>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">VAR
+END_VAR
+</xhtml>
+                      </InterfaceAsPlainText>
+                      <addData />
+                    </GetAccessor>
+                    <InterfaceAsPlainText>
+                      <xhtml xmlns="http://www.w3.org/1999/xhtml">PROPERTY State : INT</xhtml>
+                    </InterfaceAsPlainText>
+                    <addData />
+                  </Property>
+                </data>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">FUNCTION_BLOCK FB_ProbeOop
+VAR_INPUT
+    xIn : BOOL;
+END_VAR
+VAR
+    iState : INT;
+END_VAR
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="PRG_ProbeMain" pouType="program">
+              <interface>
+                <localVars>
+                  <variable name="fbOop">
+                    <type>
+                      <derived name="FB_ProbeOop" />
+                    </type>
+                  </variable>
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                      <InterfaceAsPlainText>
+                        <xhtml xmlns="http://www.w3.org/1999/xhtml">PROGRAM PRG_ProbeMain
+VAR
+    fbOop : FB_ProbeOop;
+END_VAR
+</xhtml>
+                      </InterfaceAsPlainText>
+                    </data>
+                  </addData>
+                </localVars>
+              </interface>
+              <body>
+                <ST>
+                  <xhtml xmlns="http://www.w3.org/1999/xhtml">fbOop(xIn := GVL_Probe.xFlag);
+GVL_Probe.diHours := GVL_Probe.diHours + 1;
+</xhtml>
+                </ST>
+              </body>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/interfaceasplaintext" handleUnknown="implementation">
+                  <InterfaceAsPlainText>
+                    <xhtml xmlns="http://www.w3.org/1999/xhtml">PROGRAM PRG_ProbeMain
+VAR
+    fbOop : FB_ProbeOop;
+END_VAR
+</xhtml>
+                  </InterfaceAsPlainText>
+                </data>
+              </addData>
+            </pou>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/libraries" handleUnknown="implementation">
+            <Libraries>
+              <Library Name="#IoStandard" Namespace="IoStandard" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="true" DefaultResolution="IoStandard, 3.5.17.0 (System)" />
+              <Library Name="#3SLicense" Namespace="_3S_LICENSE" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="3SLicense, 0.0.0.0 (3S - Smart Software Solutions GmbH)" ResolverGuid="97c3b452-d9fa-4ac2-9d0c-3d420aa6d95b" />
+              <Library Name="#CAA Device Diagnosis" Namespace="DED" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="CAA Device Diagnosis, 3.5.17.0 (CAA Technical Workgroup)" />
+              <Library Name="#BreakpointLogging" Namespace="BPLog" HideWhenReferencedAsDependency="false" PublishSymbolsInContainer="false" SystemLibrary="true" LinkAllContent="false" DefaultResolution="Breakpoint Logging Functions, 3.5.5.0 (3S - Smart Software Solutions GmbH)" />
+              <addData />
+            </Libraries>
+          </data>
+        </addData>
+      </resource>
+    </data>
+  </addData>
+</project>

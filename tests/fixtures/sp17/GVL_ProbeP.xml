@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP17 Patch 3" creationDateTime="2026-10-20T03:54:26.7372477" />
+  <contentHeader name="probe.project" modificationDateTime="1601-01-01T03:00:00">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous />
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation">
+      <globalVars name="GVL_ProbeP" persistent="true">
+        <variable name="xFlag">
+          <type>
+            <BOOL />
+          </type>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="order_in_persistent_editor" Value="0" />
+              </Attributes>
+            </data>
+          </addData>
+        </variable>
+        <variable name="rTotal">
+          <type>
+            <REAL />
+          </type>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="order_in_persistent_editor" Value="1" />
+              </Attributes>
+            </data>
+          </addData>
+        </variable>
+        <variable name="diHours">
+          <type>
+            <DINT />
+          </type>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="order_in_persistent_editor" Value="2" />
+              </Attributes>
+            </data>
+          </addData>
+        </variable>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+              <Attribute Name="checksumnoinit_override" Value="450480064" />
+              <Attribute Name="init_related_code" Value="b6ac4937-6a78-4e1e-9458-9c84c4255849" />
+            </Attributes>
+          </data>
+        </addData>
+      </globalVars>
+    </data>
+  </addData>
+</project>
