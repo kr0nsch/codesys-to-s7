@@ -83,6 +83,8 @@ exclude = ["tools/codesys/*.py"]
 "src/c2s7/mapping/__init__.py" = ["E501"]
 "src/c2s7/verify/run.py" = ["E501"]
 "src/c2s7/cli.py" = ["E501"]
+"src/c2s7/site/traps.py" = ["E501"]
+"src/c2s7/render/svg.py" = ["E501"]
 
 [tool.mypy]
 python_version = "3.11"
