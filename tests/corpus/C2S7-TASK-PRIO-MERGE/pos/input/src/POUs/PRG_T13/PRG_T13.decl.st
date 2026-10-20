@@ -1,0 +1,4 @@
+PROGRAM PRG_T13
+VAR
+    i : INT;
+END_VAR

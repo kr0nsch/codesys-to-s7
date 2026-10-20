@@ -1,0 +1,13 @@
+{
+  "tasks": [
+    {
+      "name": "TCy",
+      "type": "cyclic",
+      "interval_ms": 10,
+      "priority": 3,
+      "pous": [
+        "PRG_Ev"
+      ]
+    }
+  ]
+}

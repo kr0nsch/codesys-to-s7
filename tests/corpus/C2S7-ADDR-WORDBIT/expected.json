@@ -1,0 +1,11 @@
+{
+  "rule": "C2S7-ADDR-WORDBIT",
+  "pos_min": 1,
+  "neg": 0,
+  "options_pos": {
+    "bit_addressing": "word"
+  },
+  "options_neg": {
+    "bit_addressing": "byte"
+  }
+}

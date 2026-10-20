@@ -1,0 +1,347 @@
+# Реестр правил C2S7-*. Поля: outcome — исход по умолчанию (словарь семейства: auto/review/verify/manual/impossible/info),
+# title, why — объяснение для отчёта, source — первоисточник (URL или документ репозитория), fix — что делать.
+# Минуты на находку — effort.yaml (модель трудозатрат).
+# У каждого правила есть tests/corpus/<id>/{pos,neg} и описание в docs/RULES.md (тест проверяет оба).
+
+C2S7-TYPE-TIME:
+  outcome: review
+  title: "TIME CODESYS беззнаковый, Time S7 — со знаком"
+  why: "TIME CODESYS — 32 бита без знака (0…T#49D17H2M47S295MS), Time S7 — DINT мс (±T#24D20H31M23S647MS). Литерал больше 24D20H на S7-1500 переводится в LTime, на S7-1200 невозможен; разность времени, рассчитанная на беззнаковый перенос, в S7 даёт отрицательное значение."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20Development%20System/_cds_datatype_time.html; S7-1200 System Manual 04/2012, табл. 7-20"
+  fix: "Проверить расчёт времени; для периодов больше 24 суток — LTime (S7-1500) или счёт в DInt/секундах."
+C2S7-TYPE-DATE:
+  outcome: manual
+  title: "Арифметика DATE/DT через DWORD"
+  why: "В CODESYS DATE/DT — секунды с 1970 в DWORD, в S7 Date — дни с 1990 (UInt), DT — 8 байт BCD (на S7-1200 — DTL). Преобразования *_TO_DWORD дают разные числа."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20Development%20System/_cds_datatype_date_and_time.html; codesys-to-s7.md R§4.4"
+  fix: "Переписать на T_DIFF/T_ADD (S7) или DTL."
+C2S7-TYPE-RANGE:
+  outcome: review
+  title: "Тип-диапазон INT(a..b)"
+  why: "В S7 нет типов-диапазонов: подставляется базовый тип, контроль границ CODESYS теряется (с --range-check — LIMIT при присваивании)."
+  source: "codesys-to-s7.md R§4.4; ТЗ M5"
+  fix: "Проверить, что значения не выходят за диапазон, или включить --range-check."
+C2S7-TYPE-ALIAS:
+  outcome: review
+  title: "Псевдоним типа"
+  why: "PLC data type в S7 — только структура; псевдоним TYPE T : INT заменяется базовым типом."
+  source: "XSD SW.InterfaceSections_v5 (тип PLC — Struct); ТЗ M5"
+  fix: "Ничего, если имя типа не используется во внешних интерфейсах (HMI, связь)."
+C2S7-TYPE-ENUM:
+  outcome: review
+  title: "Перечисление → базовый тип и константы"
+  why: "ENUM CODESYS переводится в базовый тип (INT по умолчанию) и пользовательские константы «<Тип>_<Значение>»; именованные типы значений (NVT, V19+) — NICE."
+  source: "TIA Portal V21 Technical Slides, с. 117 (NVT); ТЗ M5"
+  fix: "Импортировать константы из PLCTags.xlsx (лист «User constants»)."
+C2S7-TYPE-UNION:
+  outcome: manual
+  title: "UNION"
+  why: "UNION в SCL S7-1500 нет; наложение — AT в неоптимизированном блоке или Serialize/Deserialize."
+  source: "McpGuides.cs (bulaofen0036-coder, MIT) — [M]; codesys-to-s7.md R§3"
+  fix: "Переписать на AT в неоптимизированном блоке или явные сдвиги."
+C2S7-TYPE-STRLEN:
+  outcome: manual
+  title: "STRING(n) при n > 254"
+  why: "String S7 — не больше 254 символов."
+  source: "Programming Guideline V1.4, табл. 2-13"
+  fix: "WString[n] (до 16382) или массив Char."
+C2S7-TYPE-STRLAYOUT:
+  outcome: manual
+  title: "Раскладка STRING в памяти"
+  why: "STRING CODESYS занимает n+1 байт (нуль-терминатор), String S7 — n+2 (длина максимальная и текущая). Наложения (UNION, AT, MemCopy) ломаются."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20Development%20System/_cds_datatype_string.html; S7-1200 System Manual §4.2"
+  fix: "Убрать наложение строк, копировать посимвольно или через Strg_TO_Chars."
+C2S7-TYPE-CYR:
+  outcome: verify
+  title: "Кириллица в String"
+  why: "String S7 — однобайтовый, кодовая страница в TIA задаётся проектом; CODESYS хранит байты как есть. Совпадение текста не подтверждено."
+  source: "codesys-to-s7.md R§4.4 [M]"
+  fix: "WString для текстов на кириллице или проверка на ПЛК (probe/)."
+C2S7-TYPE-PTR:
+  outcome: manual
+  title: "POINTER, ADR, __NEW, REFERENCE TO"
+  why: "Указатели S7 (Pointer/Any) — только в неоптимизированных блоках; REFERENCE TO → REF_TO (S7-1500, не в статике FB); динамической памяти нет."
+  source: "Programming Guideline V1.4, разд. 2.8.5; сравнительный список 05/2021"
+  fix: "Переписать на ARRAY с индексом, VARIANT или REF_TO (1500)."
+C2S7-TYPE-64:
+  outcome: impossible
+  title: "64-битный тип на S7-1200"
+  why: "LInt, ULInt, LWord, LTime на S7-1200 FW 4.x не поддерживаются (сравнительный список 05/2021, сверить)."
+  source: "https://cache.industry.siemens.com/dl/files/648/109797648/att_1067421/v1/s71500_compare_table_en.pdf"
+  fix: "Выбрать S7-1500 или перейти на 32-битный тип с контролем переполнения."
+C2S7-TYPE-WSTRING:
+  outcome: review
+  title: "WSTRING без длины"
+  why: "WSTRING CODESYS без длины — 80 символов, WString S7 без длины — 254; c2s7 пишет WString[80]."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20Development%20System/_cds_datatype_wstring.html; Guideline V1.4 табл. 2-13"
+  fix: "Ничего."
+C2S7-ADDR-OVERLAP:
+  outcome: manual
+  title: "Наложение %M разной ширины"
+  why: "В CODESYS %MX10.0 — бит 0 байта 10, а слово %MW5 — байты 10–11 (little-endian); в S7 %MW10 — байты 10–11 big-endian, бит %M10.0 — бит 8 слова. Совместный доступ разной ширины меняет смысл."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20Development%20System/_cds_operands_addresses.html; s7-to-codesys docs/MAPPING.md «Адресная модель»"
+  fix: "Перенести данные в DB (Guideline V1.4 разд. 3.4) или переставить байты (SWAP)."
+C2S7-ADDR-WORDBIT:
+  outcome: manual
+  title: "Битовый адрес при словной адресации"
+  why: "На устройстве со словной адресацией битов %IX5.3 — бит 3 слова 5; прямого перевода в байтовый адрес S7 нет."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20Development%20System/_cds_operands_addresses.html"
+  fix: "Назначить канал в аппаратной конфигурации TIA и таблице тегов."
+C2S7-ADDR-MAP:
+  outcome: review
+  title: "Адрес AT → тег S7 с пересчётом"
+  why: "Номер в %IW/%ID CODESYS — номер слова/двойного слова, в S7 — номер байта: %IWn → %IW(2n), %IDn → %ID(4n); биты совпадают при байтовой адресации. Адреса каналов в аппаратной конфигурации S7 почти всегда другие."
+  source: "проба M0 (docs/PROBES.md §2); s7-to-codesys docs/MAPPING.md «Адресная модель»"
+  fix: "Сверить адреса с аппаратной конфигурацией TIA."
+C2S7-IO-NOMAP:
+  outcome: manual
+  title: "Нет карты ввода-вывода (--io-map)"
+  why: "У проектов ОВЕН каналы привязаны в дереве устройств, а не через AT; конфигурации устройств в PLCopen нет. Без «Export mappings to CSV» c2s7 не знает, какие переменные связаны с каналами."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20Development%20System/_cds_cmd_export_io_mapping_csv.html"
+  fix: "Экспортировать карту ввода-вывода устройства в CSV и повторить с --io-map, либо назначить каналы вручную."
+C2S7-POU-PRG:
+  outcome: review
+  title: "PROGRAM → FB + экземплярный DB, вызов из OB"
+  why: "У OB нет статических переменных (секции только Input/Temp/Constant), поэтому программа становится FB \"PRG_X\" с DB \"PRG_X_DB\", а её вызов — строкой в теле OB."
+  source: "codesys-to-s7.md R§4.1; tia-portal-xml-generator (MIT), elements/interface.py — секции OB [M]"
+  fix: "Создать OB по TASKS.md и вставить тело из tia/ob/."
+C2S7-POU-FBINFC:
+  outcome: manual
+  title: "Экземпляр ФБ внутри FUNCTION"
+  why: "Во FUNCTION CODESYS экземпляр ФБ временный (создаётся на каждый вызов); в FC S7 мультиэкземпляра нет."
+  source: "codesys-to-s7.md R§4.1"
+  fix: "Сделать из функции FB или передавать экземпляр через IN_OUT."
+C2S7-POU-STAT:
+  outcome: review
+  title: "VAR_STAT в FUNCTION/METHOD → глобальный DB"
+  why: "Статические переменные функции CODESYS живут между вызовами; в FC S7 статики нет — c2s7 выносит их в DB \"<POU>_Stat\"."
+  source: "ТЗ M5; codesys-to-s7.md R§3 (VAR_STAT в экспортах TIA не встречается)"
+  fix: "Проверить, что функция вызывается из одного места (иначе общая статика)."
+C2S7-POU-INCONST:
+  outcome: review
+  title: "VAR_INPUT CONSTANT"
+  why: "Константный вход CODESYS (только литералы при вызове) переводится в обычный Input."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20Development%20System/_cds_var_input_constant.html"
+  fix: "Ничего."
+C2S7-POU-INIT:
+  outcome: review
+  title: "Начальные значения Temp и выходов FC → присваивания"
+  why: "CODESYS инициализирует временные переменные и выходы FUNCTION при каждом вызове (проба M0: выход := 7 на втором вызове); у Temp и выходов FC в S7 начальных значений нет. c2s7 пишет присваивания в начало тела."
+  source: "проба M0 (docs/PROBES.md §2)"
+  fix: "Ничего."
+C2S7-OOP:
+  outcome: manual
+  title: "METHOD, PROPERTY, EXTENDS, INTERFACE"
+  why: "Классического ООП в STEP 7 нет (есть в SIMATIC AX). P0 — план уплощения: статика FB в UDT, METHOD → FC с IN_OUT self, PROPERTY → поле или FC Get/Set, EXTENDS → слияние."
+  source: "codesys-to-s7.md R§2.6, R§4.1"
+  fix: "Уплощить по плану из MANUAL_STEPS.md."
+C2S7-ACT:
+  outcome: review
+  title: "ACTION → встраивание"
+  why: "Действий в S7 нет: тело действия встраивается в место вызова (вызов только из своего POU)."
+  source: "ТЗ M5"
+  fix: "Проверить, что действие не вызывается извне."
+C2S7-TASK-OB:
+  outcome: review
+  title: "Задача → OB"
+  why: "Тип, период и номер OB внешний исходник не задаёт, а OB1 в исходнике конфликтует с автоматическим [L]; c2s7 пишет только тело OB и TASKS.md, OB создаёт инженер."
+  source: "codesys-to-s7.md R§2.1; s7-to-codesys docs/ASSUMPTIONS.md S6"
+  fix: "Создать OB по TASKS.md (тип, номер, период, приоритет) и вставить тело."
+C2S7-TASK-LIMIT:
+  outcome: manual
+  title: "Больше циклических задач, чем циклических прерываний CPU"
+  why: "У S7-1200 — 4 циклических прерывания (R§4.5 [M]); лишние задачи не получают OB."
+  source: "Programming Guideline V1.4, табл. 2-8"
+  fix: "Объединить задачи или выбрать S7-1500."
+C2S7-TASK-PRIO-MERGE:
+  outcome: review
+  title: "Разные приоритеты задач слились"
+  why: "Приоритетов циклических задач больше, чем уровней до P_max; разные приоритеты CODESYS получили один приоритет OB."
+  source: "ТЗ M5 (формула приоритетов); S7-1500 Cycle and response times 02/2014"
+  fix: "Проверить порядок вытеснения."
+C2S7-TASK-EVENT:
+  outcome: manual
+  title: "Событийная задача"
+  why: "Задачи по событию/статусу CODESYS прямого аналога не имеют (Hardware interrupt OB40+ только для аппаратуры)."
+  source: "codesys-to-s7.md R§4.5"
+  fix: "Опрос фронта в циклическом OB или прерывание аппаратуры."
+C2S7-RET:
+  outcome: review
+  title: "PERSISTENT → Retain"
+  why: "PERSISTENT CODESYS переживает загрузку; Retain S7 — нет (после загрузки с переинициализацией значения теряются, нужен резерв памяти или рецептный DB). RETAIN во FUNCTION невозможен."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20Development%20System/_cds_preserve_data_with_persistent_variables.html; Guideline V1.4 разд. 3.2.7"
+  fix: "Резерв памяти для загрузки без переинициализации или рецептный DB."
+C2S7-LIB:
+  outcome: manual
+  title: "Библиотека без аналога в S7"
+  why: "SysLibs, CAA, библиотеки ОВЕН, OSCAT, Modbus, Symbol Configuration не имеют прямой замены; c2s7 оставляет заготовку."
+  source: "codesys-to-s7.md R§4.8"
+  fix: "Заменить на инструкции S7 (MB_SERVER, TSEND_C, FileReadC ...) или переписать."
+C2S7-STD:
+  outcome: review
+  title: "Стандартная функция с другими параметрами"
+  why: "Строковые функции S7 называют параметры IN/IN1/IN2/L/P, счётчики — R/LD; c2s7 переименовывает параметры и приводит вызов к формальному."
+  source: "реестр инструкций s7-lint-vscode (Apache-2.0), SCL-string-functions.yaml; codesys-to-s7.md R§4.3"
+  fix: "Ничего."
+C2S7-STD-UTIL:
+  outcome: manual
+  title: "Блок библиотеки Util / CAA"
+  why: "BLINK, HYSTERESIS, RAMP_*, PID и блоки CAA в P0 не переводятся (CodesysCompat P1); аналоги — LGF и технологические объекты."
+  source: "codesys-to-s7.md R§4.8"
+  fix: "Заменить на LGF_* / PID_Compact или написать блок."
+C2S7-SEM-ROUND:
+  outcome: verify
+  title: "REAL → целое: округление половины"
+  why: "CODESYS округляет половину от нуля (проба M0: REAL_TO_INT(2.5) = 3, (-2.5) = -3). Правило S7 для половины по документации противоречиво — пробник."
+  source: "проба M0 (docs/PROBES.md §2); codesys-to-s7.md §7.1 (противоречиво)"
+  fix: "Прогнать probe/ на ПЛК; при расхождении — ROUND/TRUNC явно."
+C2S7-SEM-DIV0:
+  outcome: verify
+  title: "Целочисленное деление на переменную"
+  why: "Деление на 0 в CODESYS — исключение и останов задачи (без CheckDiv*), в S7 CPU продолжает работу (результат и ENO — сверить)."
+  source: "s7-to-codesys docs/MAPPING.md (expr.div_int); справка CODESYS POU для неявных проверок"
+  fix: "Проверять делитель явно."
+C2S7-SEM-OVERFLOW:
+  outcome: verify
+  title: "Разрядность промежуточного результата"
+  why: "CODESYS считает промежуточные результаты целой арифметики не меньше чем в 32 битах (проба M0: DINT := INT(300) * INT(300) = 90000), S7 — в типе операндов (Int переполняется)."
+  source: "проба M0 (docs/PROBES.md §2); s7-to-codesys docs/MAPPING.md «Расхождения, которые конвертер не помечает»"
+  fix: "Привести операнды к типу результата явно (INT_TO_DINT)."
+C2S7-SEM-SRRS:
+  outcome: review
+  title: "SR/RS — крест-накрест"
+  why: "CODESYS SR(SET1, RESET) — установка доминирует = S7 RS; CODESYS RS(SET, RESET1) — сброс доминирует = S7 SR (проба M0, LAD-справочник 05/2010 §1.10–1.11). В SCL инструкций SR/RS нет — c2s7 ставит CDS_SR/CDS_RS."
+  source: "https://cache.industry.siemens.com/dl/files/822/45523822/att_82001/v1/s7kop__b.pdf; проба M0"
+  fix: "Ничего; CDS_SR/CDS_RS — в tia/compat/."
+C2S7-SEM-TIMER-Q:
+  outcome: review
+  title: "Чтение Q/ET таймера вне вызова"
+  why: "S7-1200 обновляет Q/ET IEC-таймера и при прямом чтении членов (S7-1200 System Manual 04/2012 §7.2, с. 186–187). Идиомы t(IN := NOT t.Q) и чтение t.Q до вызова ведут себя иначе; c2s7 переписывает их на выход вызова Q => #tQ."
+  source: "https://cache.industry.siemens.com/dl/files/465/36932465/att_106119/v1/s71200_system_manual_en-US_en-US.pdf"
+  fix: "Проверить на ПЛК (probe/)."
+C2S7-SEM-LIMIT:
+  outcome: verify
+  title: "LIMIT при MN > MX"
+  why: "CODESYS возвращает MX (проба M0); S7 по сведениям s7-to-codesys возвращает IN и ENO = FALSE — сверить."
+  source: "проба M0; s7-to-codesys docs/MAPPING.md, стр. 127"
+  fix: "Гарантировать MN <= MX или проверить на ПЛК."
+C2S7-SEM-CTR:
+  outcome: review
+  title: "Счётчик: тип CV/PV"
+  why: "У CTU/CTD/CTUD Standard PV и CV — WORD (насыщение 65535/0, проба M0); c2s7 ставит CTU_UINT. Знаковый приёмник CV → CTx_INT (беззнаковый CTD стоит на нуле, знаковый уходит в минус)."
+  source: "проба M0; S7-1200 System Manual §7.3"
+  fix: "Проверить диапазон счёта."
+C2S7-SEM-MUX:
+  outcome: verify
+  title: "MUX вне диапазона"
+  why: "MUX(K, IN0…INn) при K вне 0…n в CODESYS и S7 ведёт себя по-разному (S7: вход ELSE, ENO) — сверить."
+  source: "s7-to-codesys docs/MAPPING.md (MUX)"
+  fix: "Ограничить K."
+C2S7-SEM-TEMP:
+  outcome: review
+  title: "VAR_TEMP читается до записи"
+  why: "Temp CODESYS инициализируется при каждом вызове, Temp оптимизированного блока S7 — тоже, но значения по умолчанию типа; неоптимизированного — не определены."
+  source: "Programming Guideline V1.4, разд. 2.4"
+  fix: "Записывать Temp до чтения."
+C2S7-NAME-KEYWORD:
+  outcome: review
+  title: "Имя — ключевое слово SCL"
+  why: "Идентификатор совпадает с ключевым словом SCL; c2s7 пишет его в кавычках #\"имя\" (s7conv такую форму разбирает; TIA — сверить)."
+  source: "s7-to-codesys s7conv/lexer.py (кавычки в именах)"
+  fix: "Переименовать."
+C2S7-NAME-LEN:
+  outcome: manual
+  title: "Имя длиннее 128 символов"
+  why: "Имена блоков и тегов S7 — до 128 символов (сверить)."
+  source: "codesys-to-s7.md R§4"
+  fix: "Сократить имя."
+C2S7-GFX-ENO:
+  outcome: review
+  title: "ENO идёт дальше по цепи"
+  why: "CODESYS: ENO = EN; S7: ENO = EN AND NOT ошибка бокса (LAD-справочник 05/2010, прил. C.1). Цепочки ENO, ловящие переполнение, меняют смысл."
+  source: "https://cache.industry.siemens.com/dl/files/822/45523822/att_82001/v1/s7kop__b.pdf"
+  fix: "Проверить логику, зависящую от ENO."
+C2S7-GFX-GOTO:
+  outcome: verify
+  title: "Неприводимый переход"
+  why: "Переход не сводится к IF/REPEAT; остаётся GOTO. s7conv такой POU разбирает, но не переносит (stmt.goto — TODO), поэтому он исключён из кольца поведения."
+  source: "ТЗ M3; s7-to-codesys docs/MAPPING.md (GOTO — TODO)"
+  fix: "Переписать структурно."
+C2S7-GFX-DOUBLECOIL:
+  outcome: verify
+  title: "Двойная катушка"
+  why: "Одна переменная пишется катушками в нескольких сетях — побеждает последняя по порядку выполнения; порядок сетей TIA сохраняет, но такие места стоит проверить."
+  source: "ТЗ M5"
+  fix: "Свести запись к одной катушке."
+C2S7-GFX-CFCFB:
+  outcome: review
+  title: "Обратная связь CFC"
+  why: "Вход блока CFC берёт выход блока с большим порядком выполнения — значение прошлого цикла; c2s7 хранит его в статике."
+  source: "справка CODESYS CFC (порядок выполнения); ТЗ M5"
+  fix: "Ничего; проверить начальное значение статики."
+C2S7-GFX-EDGE:
+  outcome: review
+  title: "Контакт P/N → бит памяти в статике"
+  why: "У Siemens фронтовый контакт хранит предыдущее значение в явном бите (M или Static); CODESYS прячет память фронта."
+  source: "XSD LADFBD_v5 (PContact/NContact, операнд памяти); E§5.2"
+  fix: "Ничего."
+C2S7-GFX-SFCQ:
+  outcome: manual
+  title: "Квалификатор SFC вне P0"
+  why: "L/D/SD/DS/SL и флаги SFC в P0 не переводятся."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20SFC/_cds_sfc_action_qualifier.html"
+  fix: "Разложить на таймеры вручную."
+C2S7-GFX-SFC:
+  outcome: review
+  title: "SFC → автомат SCL"
+  why: "SFC переводится в автомат SCL (шаги — Bool в статике, время шага — TON_TIME, IEC-действия — по порядку справки CODESYS). GRAPH — P1."
+  source: "https://content.helpme-codesys.com/en/CODESYS%20SFC/_cds_sfc_sequence_of_processing.html"
+  fix: "Проверить на ПЛК (сценарии в EQUIVALENCE.md)."
+C2S7-GFX-SCL:
+  outcome: review
+  title: "Сеть вне подмножества FlgNet → SCL"
+  why: "Элемент сети не входит в закрытое подмножество LAD/FBD P0; POU переводится в SCL."
+  source: "ТЗ M5"
+  fix: "Ничего."
+C2S7-GFX-ORDER:
+  outcome: verify
+  title: "Порядок побочных эффектов в сети"
+  why: "В сети несколько выходов/вызовов; порядок их выполнения в TIA (сверху вниз, слева направо) может отличаться от CODESYS."
+  source: "E§5.2 (порядок вычисления)"
+  fix: "Разделить на сети по одному выходу."
+C2S7-IL:
+  outcome: review
+  title: "IL → SCL через ST"
+  why: "IL переводится в ST AST (текущий результат переживает ST) и печатается в SCL; IL → STL — NICE."
+  source: "ТЗ M2; IL исключён из МЭК 61131-3 ed. 4"
+  fix: "Ничего."
+C2S7-PROF-LANG:
+  outcome: impossible
+  title: "Язык недоступен на CPU"
+  why: "STL, GRAPH, CFC на S7-1200 нет (сравнительный список 05/2021)."
+  source: "https://cache.industry.siemens.com/dl/files/648/109797648/att_1067421/v1/s71500_compare_table_en.pdf"
+  fix: "SCL или S7-1500."
+C2S7-PROF-REF:
+  outcome: impossible
+  title: "REF_TO на S7-1200"
+  why: "REF_TO/REF() есть в STEP 7 для S7-1500 (сравнительный список 05/2021); для S7-1200 FW 4.x не подтверждено."
+  source: "https://cache.industry.siemens.com/dl/files/648/109797648/att_1067421/v1/s71500_compare_table_en.pdf"
+  fix: "Переписать без ссылок."
+C2S7-RING-TODO:
+  outcome: manual
+  title: "Пометка s7conv MIGRATION-TODO"
+  why: "Конструкция пришла из s7-to-codesys непереведённой; c2s7 восстанавливает исходный текст SCL из комментария пометки и оставляет ручной шаг."
+  source: "s7-to-codesys docs/MAPPING.md «Не поддерживается»"
+  fix: "Проверить восстановленный текст."
+C2S7-RING-CHECK:
+  outcome: info
+  title: "Пометка s7conv MIGRATION-CHECK"
+  why: "Входная пометка s7conv распознана; повторно не ставится (00-INDEX §4.1)."
+  source: "00-INDEX.md §4.1"
+  fix: "Ничего."
+C2S7-RING-LOSS:
+  outcome: manual
+  title: "Потеря в s7-to-codesys"
+  why: "s7conv не перенёс часть конструкции (аргумент, объявление); восстановить её по ST нельзя."
+  source: "s7-to-codesys docs/MAPPING.md"
+  fix: "Восстановить по исходному проекту S7."

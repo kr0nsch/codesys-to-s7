@@ -1,0 +1,4 @@
+VAR_GLOBAL
+    xIn AT %IX0.3 : BOOL;
+    iRaw AT %IW5 : INT;
+END_VAR

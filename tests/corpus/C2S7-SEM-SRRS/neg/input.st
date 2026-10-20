@@ -1,0 +1,7 @@
+FUNCTION_BLOCK FB_Case
+VAR
+    e : R_TRIG;
+    x : BOOL;
+END_VAR
+e(CLK := x);
+END_FUNCTION_BLOCK

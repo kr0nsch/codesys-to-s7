@@ -1,0 +1,148 @@
+{
+  "tasks": [
+    {
+      "name": "T0",
+      "type": "cyclic",
+      "interval_ms": 10,
+      "priority": 0,
+      "pous": [
+        "PRG_T0"
+      ]
+    },
+    {
+      "name": "T1",
+      "type": "cyclic",
+      "interval_ms": 20,
+      "priority": 1,
+      "pous": [
+        "PRG_T1"
+      ]
+    },
+    {
+      "name": "T2",
+      "type": "cyclic",
+      "interval_ms": 30,
+      "priority": 2,
+      "pous": [
+        "PRG_T2"
+      ]
+    },
+    {
+      "name": "T3",
+      "type": "cyclic",
+      "interval_ms": 40,
+      "priority": 3,
+      "pous": [
+        "PRG_T3"
+      ]
+    },
+    {
+      "name": "T4",
+      "type": "cyclic",
+      "interval_ms": 50,
+      "priority": 4,
+      "pous": [
+        "PRG_T4"
+      ]
+    },
+    {
+      "name": "T5",
+      "type": "cyclic",
+      "interval_ms": 60,
+      "priority": 5,
+      "pous": [
+        "PRG_T5"
+      ]
+    },
+    {
+      "name": "T6",
+      "type": "cyclic",
+      "interval_ms": 70,
+      "priority": 6,
+      "pous": [
+        "PRG_T6"
+      ]
+    },
+    {
+      "name": "T7",
+      "type": "cyclic",
+      "interval_ms": 80,
+      "priority": 7,
+      "pous": [
+        "PRG_T7"
+      ]
+    },
+    {
+      "name": "T8",
+      "type": "cyclic",
+      "interval_ms": 90,
+      "priority": 8,
+      "pous": [
+        "PRG_T8"
+      ]
+    },
+    {
+      "name": "T9",
+      "type": "cyclic",
+      "interval_ms": 100,
+      "priority": 9,
+      "pous": [
+        "PRG_T9"
+      ]
+    },
+    {
+      "name": "T10",
+      "type": "cyclic",
+      "interval_ms": 110,
+      "priority": 10,
+      "pous": [
+        "PRG_T10"
+      ]
+    },
+    {
+      "name": "T11",
+      "type": "cyclic",
+      "interval_ms": 120,
+      "priority": 11,
+      "pous": [
+        "PRG_T11"
+      ]
+    },
+    {
+      "name": "T12",
+      "type": "cyclic",
+      "interval_ms": 130,
+      "priority": 12,
+      "pous": [
+        "PRG_T12"
+      ]
+    },
+    {
+      "name": "T13",
+      "type": "cyclic",
+      "interval_ms": 140,
+      "priority": 13,
+      "pous": [
+        "PRG_T13"
+      ]
+    },
+    {
+      "name": "T14",
+      "type": "cyclic",
+      "interval_ms": 150,
+      "priority": 14,
+      "pous": [
+        "PRG_T14"
+      ]
+    },
+    {
+      "name": "T15",
+      "type": "cyclic",
+      "interval_ms": 160,
+      "priority": 15,
+      "pous": [
+        "PRG_T15"
+      ]
+    }
+  ]
+}

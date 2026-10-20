@@ -1,0 +1,6 @@
+FUNCTION_BLOCK FB_Case
+VAR
+    s : STRING(80);
+END_VAR
+s := 'a';
+END_FUNCTION_BLOCK

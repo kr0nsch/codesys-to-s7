@@ -1,0 +1,5 @@
+{
+  "rule": "C2S7-RET",
+  "pos_min": 1,
+  "neg": 0
+}

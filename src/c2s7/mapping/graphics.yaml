@@ -1,0 +1,16 @@
+title: "Графические языки и IL"
+rows:
+  - {cds: "LD: контакты НО/НЗ, ветви, катушки ( ) (/) (S) (R)", s7: "LAD (FlgNet V19/V21): Contact, Coil, SCoil, RCoil, параллельные провода", class: auto, source: "XSD LADFBD_v5; эталонный набор [M]", test: "tests/unit/test_flgnet.py"}
+  - {cds: "LD: контакт P/N", s7: "PContact/NContact с битом памяти в статике", class: review, source: "XSD LADFBD_v5", test: "tests/corpus/C2S7-GFX-EDGE"}
+  - {cds: "FBD: AND/OR/XOR/NOT, сравнения, ADD/SUB/MUL/DIV, MOVE/SEL/LIMIT", s7: "FBD (FlgNet): A/O/X, Not, Gt…, Add…, Move, Sel, Limit", class: auto, source: "XSD LADFBD_v5", test: "tests/unit/test_flgnet.py"}
+  - {cds: "LD/FBD: TON/TOF/TP, CTU, вызов FB/FC", s7: "Part TON Version=1.0 + TemplateValue; Call", class: auto, source: "XSD; эталонный набор [M]", test: "tests/unit/test_flgnet.py"}
+  - {cds: "LD/FBD: Jump/Label/Return", s7: "JMP/LABEL/RET", class: review, source: "XSD LADFBD_v5", test: "tests/unit/test_flgnet.py"}
+  - {cds: "двойная катушка", s7: "та же + C2S7-GFX-DOUBLECOIL", class: verify, source: "ТЗ M5", test: "tests/corpus/C2S7-GFX-DOUBLECOIL"}
+  - {cds: "вне подмножества P0", s7: "POU → SCL (C2S7-GFX-SCL)", class: review, source: "ТЗ M5", test: "tests/corpus/C2S7-GFX-SCL"}
+  - {cds: "LD/FBD → SCL (всегда)", s7: "сеть → операторы по потоку питания/данных", class: auto, source: "E§5.1 (алгоритм)", test: "tests/property/test_net_truth.py"}
+  - {cds: "CFC", s7: "SCL по executionOrderId; обратная связь → статика с прошлым значением", class: review, source: "справка CODESYS CFC", test: "tests/corpus/C2S7-GFX-CFCFB"}
+  - {cds: "SFC: шаги, переходы, альтернатива, параллель, прыжок", s7: "автомат SCL (Bool шагов, TON_TIME времени шага)", class: review, source: "справка CODESYS SFC (порядок обработки)", test: "tests/property/test_sfc_automaton.py"}
+  - {cds: "SFC: N/S/R/P, действие шага", s7: "в автомате по порядку справки CODESYS", class: review, source: "справка CODESYS SFC qualifiers", test: "tests/property/test_sfc_automaton.py"}
+  - {cds: "SFC: L/D/SD/DS/SL, флаги", s7: "manual (P1)", class: manual, source: "справка CODESYS SFC qualifiers", test: "tests/corpus/C2S7-GFX-SFCQ"}
+  - {cds: "SFC → GRAPH (1500)", s7: "P1, экспериментально", class: manual, source: "XSD Graph_v6", test: "—"}
+  - {cds: "IL: LD/ST/S/R, логика с N и скобками, арифметика, сравнения, JMP/JMPC/JMPCN, CAL, RET", s7: "через ST AST → SCL", class: review, source: "МЭК 61131-3 ed. 3 (IL)", test: "tests/unit/test_il.py"}

@@ -1,0 +1,6 @@
+FUNCTION_BLOCK FB_Case
+VAR
+    ws : WSTRING(20);
+END_VAR
+ws := "a";
+END_FUNCTION_BLOCK

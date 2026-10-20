@@ -1,0 +1,3 @@
+VAR_GLOBAL
+    xIn AT %IX0.3 : BOOL;
+END_VAR

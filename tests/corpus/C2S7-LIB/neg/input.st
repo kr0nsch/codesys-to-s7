@@ -1,0 +1,7 @@
+FUNCTION_BLOCK FB_Case
+VAR
+    n : INT;
+    a : INT;
+END_VAR
+n := a;
+END_FUNCTION_BLOCK

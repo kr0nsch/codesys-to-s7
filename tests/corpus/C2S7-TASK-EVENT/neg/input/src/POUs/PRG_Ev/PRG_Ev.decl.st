@@ -1,0 +1,4 @@
+PROGRAM PRG_Ev
+VAR
+    i : INT;
+END_VAR

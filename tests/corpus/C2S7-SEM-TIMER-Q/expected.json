@@ -1,0 +1,5 @@
+{
+  "rule": "C2S7-SEM-TIMER-Q",
+  "pos_min": 1,
+  "neg": 0
+}

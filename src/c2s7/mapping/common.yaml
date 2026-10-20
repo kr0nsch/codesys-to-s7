@@ -1,0 +1,36 @@
+title: "Общее: типы, секции, адреса, объекты"
+rows:
+  - {cds: "BOOL…LREAL, BYTE…DWORD", s7: "те же (Bool, Int, DInt, Real…)", class: auto, source: "сравнительный список 05/2021", test: "tests/unit/test_reverse_rules.py"}
+  - {cds: "LINT, ULINT, LWORD, LTIME", s7: "те же на S7-1500; на S7-1200 — C2S7-TYPE-64", class: "auto / impossible", source: "сравнительный список 05/2021 (сверить)", test: "tests/corpus/C2S7-TYPE-64"}
+  - {cds: "BIT; __XWORD, __UXINT, __XINT", s7: "Bool; DWord/UDInt/DInt", class: review, source: "codesys-to-s7.md R§4.4", test: "tests/unit/test_types.py"}
+  - {cds: "TIME", s7: "Time; литерал > T#24D20H31M23S647MS → LTime (1500) или impossible; разность — находка", class: review, source: "справка CODESYS TIME; S7-1200 Manual табл. 7-20", test: "tests/corpus/C2S7-TYPE-TIME"}
+  - {cds: "DATE, DT, TOD, LDT", s7: "Date, Date_And_Time, Time_Of_Day; арифметика через *_TO_DWORD → C2S7-TYPE-DATE", class: "review / manual", source: "R§4.4", test: "tests/corpus/C2S7-TYPE-DATE"}
+  - {cds: "STRING / STRING(n ≤ 254) / n > 254", s7: "String[80] / String[n] / manual", class: "auto / manual", source: "справка CODESYS STRING; Guideline V1.4 табл. 2-13", test: "tests/corpus/C2S7-TYPE-STRLEN"}
+  - {cds: "WSTRING / WSTRING(n)", s7: "WString[80] / WString[n]", class: review, source: "Guideline V1.4 табл. 2-13", test: "tests/corpus/C2S7-TYPE-WSTRING"}
+  - {cds: "STRUCT", s7: "TYPE \"X\" STRUCT … END_STRUCT (.udt)", class: auto, source: "экспорты TIA (R§3)", test: "tests/ring"}
+  - {cds: "псевдоним TYPE T : INT", s7: "базовый тип", class: review, source: "XSD InterfaceSections_v5", test: "tests/corpus/C2S7-TYPE-ALIAS"}
+  - {cds: "диапазон INT(0..100)", s7: "базовый тип + C2S7-TYPE-RANGE", class: review, source: "ТЗ M5", test: "tests/corpus/C2S7-TYPE-RANGE"}
+  - {cds: "ENUM", s7: "базовый тип + пользовательские константы <Тип>_<Значение>", class: review, source: "слайды V21 с. 117 (NVT — NICE)", test: "tests/corpus/C2S7-TYPE-ENUM"}
+  - {cds: "UNION", s7: "manual (AT в неоптимизированном блоке)", class: manual, source: "McpGuides.cs [M]", test: "tests/corpus/C2S7-TYPE-UNION"}
+  - {cds: "ARRAY / ARRAY[*]", s7: "Array[..] of / Array[*] (только InOut)", class: "auto / verify", source: "R§4.2", test: "tests/unit/test_reverse_rules.py"}
+  - {cds: "POINTER, ADR, __NEW / REFERENCE TO", s7: "Variant (заготовка) / REF_TO (1500)", class: "manual / verify", source: "Guideline V1.4 разд. 2.8.5", test: "tests/corpus/C2S7-TYPE-PTR"}
+  - {cds: "VAR_INPUT/OUTPUT/IN_OUT, VAR, VAR_TEMP, VAR CONSTANT", s7: "те же; VAR функции → VAR_TEMP", class: auto, source: "экспорты TIA", test: "tests/unit/test_reverse_rules.py"}
+  - {cds: "VAR_STAT в FUNCTION", s7: "глобальный DB \"<POU>_Stat\"", class: review, source: "ТЗ M5", test: "tests/corpus/C2S7-POU-STAT"}
+  - {cds: "VAR_EXTERNAL", s7: "прямое обращение к DB", class: auto, source: "ТЗ M5", test: "tests/unit/test_convert.py"}
+  - {cds: "VAR_INPUT CONSTANT", s7: "Input + находка", class: review, source: "справка CODESYS", test: "tests/corpus/C2S7-POU-INCONST"}
+  - {cds: "начальные значения Temp и выходов FC", s7: "присваивания в начале тела", class: review, source: "проба M0", test: "tests/corpus/C2S7-POU-INIT"}
+  - {cds: "RETAIN / PERSISTENT / RETAIN в FUNCTION", s7: "VAR RETAIN / то же + C2S7-RET / manual", class: "auto / review / manual", source: "Guideline V1.4 разд. 3.2.7", test: "tests/corpus/C2S7-RET"}
+  - {cds: "AT %I/%Q", s7: "теги (--io-map); %IXa.b → %Ia.b, %IWn → %IW(2n), %IDn → %ID(4n)", class: review, source: "проба M0; s7conv MAPPING «Адресная модель»", test: "tests/corpus/C2S7-ADDR-MAP"}
+  - {cds: "пословные биты (--cds-bit-addressing word)", s7: "manual", class: manual, source: "справка CODESYS операнды", test: "tests/corpus/C2S7-ADDR-WORDBIT"}
+  - {cds: "AT %M; наложение %MX/%MB/%MW/%MD", s7: "DB \"DB_Markers\" или --markers keep; разная ширина — keep + C2S7-ADDR-OVERLAP", class: "review / manual", source: "s7conv MAPPING addr.overlap", test: "tests/corpus/C2S7-ADDR-OVERLAP"}
+  - {cds: "без --io-map", s7: "C2S7-IO-NOMAP, пустой IO_MAP.csv", class: manual, source: "справка CODESYS Export mappings to CSV", test: "tests/corpus/C2S7-IO-NOMAP"}
+  - {cds: "GVL / VAR_GLOBAL CONSTANT", s7: "глобальный DB (GVL.x → \"GVL\".x) / пользовательские константы", class: auto, source: "R§4.1", test: "tests/unit/test_reverse_rules.py"}
+  - {cds: "ФБ в GVL", s7: "одиночный DB \"<GVL>_<экземпляр>\" (в кольце — имя экземпляра)", class: review, source: "ТЗ M5", test: "tests/unit/test_convert.py"}
+  - {cds: "PROGRAM", s7: "FB \"PRG_X\" + DB \"PRG_X_DB\" + вызов в теле OB", class: review, source: "R§4.1", test: "tests/corpus/C2S7-POU-PRG"}
+  - {cds: "FUNCTION_BLOCK / FUNCTION", s7: "FB / FC : <тип>, #F := …", class: auto, source: "экспорты TIA", test: "tests/unit/test_reverse_rules.py"}
+  - {cds: "ФБ внутри FUNCTION", s7: "manual", class: manual, source: "R§4.1", test: "tests/corpus/C2S7-POU-FBINFC"}
+  - {cds: "ACTION", s7: "встраивание в место вызова", class: review, source: "ТЗ M5", test: "tests/corpus/C2S7-ACT"}
+  - {cds: "METHOD, PROPERTY, EXTENDS / INTERFACE", s7: "P0 — план уплощения (MANUAL_STEPS.md)", class: manual, source: "R§2.6, R§4.1", test: "tests/corpus/C2S7-OOP"}
+  - {cds: "задачи циклические", s7: "OB30…38, дальше с OB123; приоритет P = P_max − r (формула ТЗ M5)", class: review, source: "S7-1500 Cycle times 02/2014", test: "tests/unit/test_tasks.py"}
+  - {cds: "freewheeling / старт / событие", s7: "OB1 (program cycle) / OB100 / manual", class: "review / manual", source: "R§4.5", test: "tests/unit/test_tasks.py"}
+  - {cds: "задач больше, чем OB профиля; слияние приоритетов", s7: "C2S7-TASK-LIMIT / C2S7-TASK-PRIO-MERGE", class: "manual / review", source: "Guideline V1.4 табл. 2-8", test: "tests/corpus/C2S7-TASK-LIMIT"}

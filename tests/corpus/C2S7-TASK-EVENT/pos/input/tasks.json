@@ -1,0 +1,13 @@
+{
+  "tasks": [
+    {
+      "name": "TEv",
+      "type": "event",
+      "interval_ms": null,
+      "priority": 3,
+      "pous": [
+        "PRG_Ev"
+      ]
+    }
+  ]
+}

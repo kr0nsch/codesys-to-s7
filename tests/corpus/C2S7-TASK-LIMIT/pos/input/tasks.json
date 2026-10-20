@@ -1,0 +1,49 @@
+{
+  "tasks": [
+    {
+      "name": "T0",
+      "type": "cyclic",
+      "interval_ms": 10,
+      "priority": 0,
+      "pous": [
+        "PRG_T0"
+      ]
+    },
+    {
+      "name": "T1",
+      "type": "cyclic",
+      "interval_ms": 20,
+      "priority": 1,
+      "pous": [
+        "PRG_T1"
+      ]
+    },
+    {
+      "name": "T2",
+      "type": "cyclic",
+      "interval_ms": 30,
+      "priority": 2,
+      "pous": [
+        "PRG_T2"
+      ]
+    },
+    {
+      "name": "T3",
+      "type": "cyclic",
+      "interval_ms": 40,
+      "priority": 3,
+      "pous": [
+        "PRG_T3"
+      ]
+    },
+    {
+      "name": "T4",
+      "type": "cyclic",
+      "interval_ms": 50,
+      "priority": 4,
+      "pous": [
+        "PRG_T4"
+      ]
+    }
+  ]
+}

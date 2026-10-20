@@ -1,0 +1,24 @@
+title: "ST → SCL"
+rows:
+  - {cds: "обращения, операторы", s7: "#x, \"DB\".x, \"тег\"; скобки по приоритетам; EXPT → **", class: auto, source: "экспорты TIA; s7conv MAPPING", test: "tests/unit/test_printer.py"}
+  - {cds: "ключевое слово SCL как имя", s7: "#\"x\"", class: review, source: "s7conv lexer.py (TIA — сверить)", test: "tests/corpus/C2S7-NAME-KEYWORD"}
+  - {cds: "IF/CASE/FOR/WHILE/REPEAT, EXIT, CONTINUE, RETURN", s7: "те же с ; после END_*", class: auto, source: "экспорты TIA", test: "tests/unit/test_reverse_rules.py"}
+  - {cds: "позиционные вызовы функций", s7: "формальные по реестру инструкций", class: auto, source: "реестр s7-lint (Apache-2.0)", test: "tests/unit/test_reverse_rules.py"}
+  - {cds: "S= / R=", s7: "IF … THEN x := TRUE/FALSE", class: auto, source: "ТЗ M5", test: "tests/unit/test_printer.py"}
+  - {cds: "a := b := c", s7: "разбиение на два присваивания", class: auto, source: "ТЗ M5", test: "tests/unit/test_parser.py"}
+  - {cds: "REF=", s7: "REF() (1500)", class: verify, source: "сравнительный список 05/2021", test: "tests/corpus/C2S7-PROF-REF"}
+  - {cds: "w.3", s7: "#w.%X3", class: auto, source: "s7conv MAPPING", test: "tests/unit/test_reverse_rules.py"}
+  - {cds: "JMP / метки", s7: "IF/REPEAT (jumps.py) или GOTO + C2S7-GFX-GOTO", class: "auto / verify", source: "ТЗ M3", test: "tests/unit/test_jumps.py"}
+  - {cds: "CONCAT/LEFT/MID/INSERT/DELETE/REPLACE/FIND/LEN", s7: "параметры IN/IN1/IN2/L/P", class: review, source: "реестр s7-lint SCL-string-functions.yaml", test: "tests/corpus/C2S7-STD"}
+  - {cds: "REAL_TO_*INT", s7: "то же; округление половины — пробник", class: verify, source: "проба M0", test: "tests/corpus/C2S7-SEM-ROUND"}
+  - {cds: "целое деление на переменную", s7: "то же + C2S7-SEM-DIV0", class: verify, source: "s7conv MAPPING expr.div_int", test: "tests/corpus/C2S7-SEM-DIV0"}
+  - {cds: "INT*INT в DINT", s7: "то же + C2S7-SEM-OVERFLOW", class: verify, source: "проба M0", test: "tests/corpus/C2S7-SEM-OVERFLOW"}
+  - {cds: "MUX; LIMIT при MN > MX", s7: "MUX(K, IN0…); LIMIT(MN, IN, MX) — пробник", class: verify, source: "s7conv MAPPING стр. 127; проба M0", test: "tests/corpus/C2S7-SEM-LIMIT"}
+  - {cds: "TON/TOF/TP (L-)", s7: "TON_TIME… (*_LTIME); t(IN := NOT t.Q) и чтение t.Q до вызова → Q => #t_Q", class: review, source: "S7-1200 Manual 04/2012 §7.2, с. 186–187", test: "tests/corpus/C2S7-SEM-TIMER-Q"}
+  - {cds: "CTU/CTD/CTUD", s7: "CTU_UINT/CTD_UINT/CTUD_UINT; знаковый приёмник CV → CTx_INT; RESET→R, LOAD→LD", class: review, source: "проба M0; S7-1200 Manual §7.3", test: "tests/corpus/C2S7-SEM-CTR"}
+  - {cds: "R_TRIG / F_TRIG", s7: "те же (F_TRIG Standard 3.5.17.0 = S7)", class: auto, source: "s7-to-codesys TEST_REPORT; проба M0", test: "tests/unit/test_reverse_rules.py"}
+  - {cds: "SR / RS", s7: "крест-накрест: CDS_SR/CDS_RS (CodesysCompat)", class: review, source: "LAD-справочник 05/2010 §1.10–1.11; проба M0", test: "tests/corpus/C2S7-SEM-SRRS"}
+  - {cds: "EN/ENO", s7: "C2S7-GFX-ENO (ENO S7 = EN AND NOT ошибка)", class: review, source: "LAD-справочник прил. C.1", test: "tests/corpus/C2S7-GFX-ENO"}
+  - {cds: "Util (BLINK, HYSTERESIS, RAMP_*, PID…)", s7: "manual (CodesysCompat P1)", class: manual, source: "R§4.8", test: "tests/corpus/C2S7-STD-UTIL"}
+  - {cds: "TIME()", s7: "TIME_TCK() (по CPU сверить)", class: verify, source: "сравнительный список 05/2021", test: "tests/unit/test_reverse_rules.py"}
+  - {cds: "CAA, SysLibs, OSCAT, библиотеки ОВЕН, SIZEOF", s7: "C2S7-LIB", class: "manual / impossible", source: "R§4.8", test: "tests/corpus/C2S7-LIB"}

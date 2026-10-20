@@ -1,0 +1,7 @@
+FUNCTION_BLOCK FB_Case
+VAR
+    w : WORD;
+    dtNow : DT;
+END_VAR
+w := DWORD_TO_WORD(DT_TO_DWORD(dtNow));
+END_FUNCTION_BLOCK

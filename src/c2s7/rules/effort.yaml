@@ -1,0 +1,175 @@
+# Модель трудозатрат (00-INDEX §4.3): минуты на одну находку правила — треугольное распределение
+# [min, mode, max]. Значения задал автор по описанию правила и шагу «что сделать»; данные не калиброваны.
+# Итог — Монте-Карло, 10 000 проб, seed 20261019, находки независимы (c2s7.rules.effort).
+
+C2S7-TYPE-TIME:
+  minutes: [10, 20, 60]
+  basis: Проверить расчёт времени; для периодов больше 24 суток — LTime (S7-1500) или счёт в DInt/секундах.
+C2S7-TYPE-DATE:
+  minutes: [20, 45, 120]
+  basis: Переписать на T_DIFF/T_ADD (S7) или DTL.
+C2S7-TYPE-RANGE:
+  minutes: [5, 10, 30]
+  basis: Проверить, что значения не выходят за диапазон, или включить --range-check.
+C2S7-TYPE-ALIAS:
+  minutes: [2, 5, 15]
+  basis: Ничего, если имя типа не используется во внешних интерфейсах (HMI, связь).
+C2S7-TYPE-ENUM:
+  minutes: [5, 15, 40]
+  basis: Импортировать константы из PLCTags.xlsx (лист «User constants»).
+C2S7-TYPE-UNION:
+  minutes: [30, 60, 180]
+  basis: Переписать на AT в неоптимизированном блоке или явные сдвиги.
+C2S7-TYPE-STRLEN:
+  minutes: [15, 30, 90]
+  basis: WString[n] (до 16382) или массив Char.
+C2S7-TYPE-STRLAYOUT:
+  minutes: [20, 45, 120]
+  basis: Убрать наложение строк, копировать посимвольно или через Strg_TO_Chars.
+C2S7-TYPE-CYR:
+  minutes: [5, 15, 45]
+  basis: WString для текстов на кириллице или проверка на ПЛК (probe/).
+C2S7-TYPE-PTR:
+  minutes: [30, 90, 240]
+  basis: Переписать на ARRAY с индексом, VARIANT или REF_TO (1500).
+C2S7-TYPE-64:
+  minutes: [15, 30, 90]
+  basis: Выбрать S7-1500 или перейти на 32-битный тип с контролем переполнения.
+C2S7-TYPE-WSTRING:
+  minutes: [1, 3, 10]
+  basis: Ничего.
+C2S7-ADDR-OVERLAP:
+  minutes: [20, 40, 120]
+  basis: Перенести данные в DB (Guideline V1.4 разд. 3.4) или переставить байты (SWAP).
+C2S7-ADDR-WORDBIT:
+  minutes: [5, 10, 30]
+  basis: Назначить канал в аппаратной конфигурации TIA и таблице тегов.
+C2S7-ADDR-MAP:
+  minutes: [2, 5, 15]
+  basis: Сверить адреса с аппаратной конфигурацией TIA.
+C2S7-IO-NOMAP:
+  minutes: [30, 60, 240]
+  basis: Экспортировать карту ввода-вывода устройства в CSV и повторить с --io-map, либо назначить каналы вручную.
+C2S7-POU-PRG:
+  minutes: [2, 5, 15]
+  basis: Создать OB по TASKS.md и вставить тело из tia/ob/.
+C2S7-POU-FBINFC:
+  minutes: [15, 30, 90]
+  basis: Сделать из функции FB или передавать экземпляр через IN_OUT.
+C2S7-POU-STAT:
+  minutes: [5, 15, 40]
+  basis: Проверить, что функция вызывается из одного места (иначе общая статика).
+C2S7-POU-INCONST:
+  minutes: [1, 3, 10]
+  basis: Ничего.
+C2S7-POU-INIT:
+  minutes: [1, 3, 10]
+  basis: Ничего.
+C2S7-OOP:
+  minutes: [60, 120, 480]
+  basis: Уплощить по плану из MANUAL_STEPS.md.
+C2S7-ACT:
+  minutes: [5, 10, 30]
+  basis: Проверить, что действие не вызывается извне.
+C2S7-TASK-OB:
+  minutes: [5, 10, 20]
+  basis: Создать OB по TASKS.md (тип, номер, период, приоритет) и вставить тело.
+C2S7-TASK-LIMIT:
+  minutes: [30, 60, 120]
+  basis: Объединить задачи или выбрать S7-1500.
+C2S7-TASK-PRIO-MERGE:
+  minutes: [5, 15, 30]
+  basis: Проверить порядок вытеснения.
+C2S7-TASK-EVENT:
+  minutes: [20, 45, 120]
+  basis: Опрос фронта в циклическом OB или прерывание аппаратуры.
+C2S7-RET:
+  minutes: [10, 20, 60]
+  basis: Резерв памяти для загрузки без переинициализации или рецептный DB.
+C2S7-LIB:
+  minutes: [30, 90, 480]
+  basis: Заменить на инструкции S7 (MB_SERVER, TSEND_C, FileReadC ...) или переписать.
+C2S7-STD:
+  minutes: [1, 3, 10]
+  basis: Ничего.
+C2S7-STD-UTIL:
+  minutes: [20, 45, 120]
+  basis: Заменить на LGF_* / PID_Compact или написать блок.
+C2S7-SEM-ROUND:
+  minutes: [5, 10, 30]
+  basis: Прогнать probe/ на ПЛК; при расхождении — ROUND/TRUNC явно.
+C2S7-SEM-DIV0:
+  minutes: [5, 10, 30]
+  basis: Проверять делитель явно.
+C2S7-SEM-OVERFLOW:
+  minutes: [5, 15, 45]
+  basis: Привести операнды к типу результата явно (INT_TO_DINT).
+C2S7-SEM-SRRS:
+  minutes: [2, 5, 15]
+  basis: Ничего; CDS_SR/CDS_RS — в tia/compat/.
+C2S7-SEM-TIMER-Q:
+  minutes: [10, 20, 60]
+  basis: Проверить на ПЛК (probe/).
+C2S7-SEM-LIMIT:
+  minutes: [5, 10, 30]
+  basis: Гарантировать MN <= MX или проверить на ПЛК.
+C2S7-SEM-CTR:
+  minutes: [5, 10, 30]
+  basis: Проверить диапазон счёта.
+C2S7-SEM-MUX:
+  minutes: [5, 10, 30]
+  basis: Ограничить K.
+C2S7-SEM-TEMP:
+  minutes: [2, 5, 15]
+  basis: Записывать Temp до чтения.
+C2S7-NAME-KEYWORD:
+  minutes: [2, 5, 15]
+  basis: Переименовать.
+C2S7-NAME-LEN:
+  minutes: [2, 5, 15]
+  basis: Сократить имя.
+C2S7-GFX-ENO:
+  minutes: [10, 20, 60]
+  basis: Проверить логику, зависящую от ENO.
+C2S7-GFX-GOTO:
+  minutes: [15, 30, 90]
+  basis: Переписать структурно.
+C2S7-GFX-DOUBLECOIL:
+  minutes: [5, 15, 45]
+  basis: Свести запись к одной катушке.
+C2S7-GFX-CFCFB:
+  minutes: [5, 10, 30]
+  basis: Ничего; проверить начальное значение статики.
+C2S7-GFX-EDGE:
+  minutes: [2, 5, 15]
+  basis: Ничего.
+C2S7-GFX-SFCQ:
+  minutes: [15, 30, 90]
+  basis: Разложить на таймеры вручную.
+C2S7-GFX-SFC:
+  minutes: [10, 20, 60]
+  basis: Проверить на ПЛК (сценарии в EQUIVALENCE.md).
+C2S7-GFX-SCL:
+  minutes: [2, 5, 15]
+  basis: Ничего.
+C2S7-GFX-ORDER:
+  minutes: [5, 10, 30]
+  basis: Разделить на сети по одному выходу.
+C2S7-IL:
+  minutes: [5, 10, 30]
+  basis: Ничего.
+C2S7-PROF-LANG:
+  minutes: [10, 20, 60]
+  basis: SCL или S7-1500.
+C2S7-PROF-REF:
+  minutes: [30, 60, 180]
+  basis: Переписать без ссылок.
+C2S7-RING-TODO:
+  minutes: [5, 15, 60]
+  basis: Проверить восстановленный текст.
+C2S7-RING-CHECK:
+  minutes: [0, 0, 0]
+  basis: Ничего.
+C2S7-RING-LOSS:
+  minutes: [10, 20, 60]
+  basis: Восстановить по исходному проекту S7.

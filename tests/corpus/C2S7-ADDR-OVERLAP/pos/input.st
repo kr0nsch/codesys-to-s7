@@ -1,0 +1,4 @@
+VAR_GLOBAL
+    wStat AT %MW5 : WORD;
+    xBit AT %MX10.0 : BOOL;
+END_VAR

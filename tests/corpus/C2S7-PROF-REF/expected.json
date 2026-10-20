@@ -1,0 +1,8 @@
+{
+  "rule": "C2S7-PROF-REF",
+  "pos_min": 1,
+  "neg": 0,
+  "options": {
+    "cpu": "s7-1200"
+  }
+}

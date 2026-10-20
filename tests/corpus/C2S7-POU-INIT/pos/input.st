@@ -1,0 +1,9 @@
+FUNCTION F_Case : INT
+VAR_INPUT
+    x : BOOL;
+END_VAR
+VAR_OUTPUT
+    o : INT := 7;
+END_VAR
+F_Case := 1;
+END_FUNCTION

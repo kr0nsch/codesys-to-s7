@@ -1,0 +1,9 @@
+FUNCTION_BLOCK FB_Case
+VAR_INPUT
+    k : INT;
+END_VAR
+VAR
+    a : INT;
+END_VAR
+a := k;
+END_FUNCTION_BLOCK

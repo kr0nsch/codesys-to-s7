@@ -1,0 +1,4 @@
+VAR_GLOBAL
+    wA AT %MW5 : WORD;
+    iA AT %MW5 : INT;
+END_VAR

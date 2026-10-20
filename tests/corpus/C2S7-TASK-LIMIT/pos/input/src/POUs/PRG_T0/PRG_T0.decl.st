@@ -1,0 +1,4 @@
+PROGRAM PRG_T0
+VAR
+    i : INT;
+END_VAR

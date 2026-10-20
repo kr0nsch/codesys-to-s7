@@ -1,0 +1,10 @@
+FUNCTION_BLOCK FB_Case
+VAR
+    a : INT;
+END_VAR
+VAR_TEMP
+    tmp : INT;
+END_VAR
+tmp := 1;
+a := tmp + 1;
+END_FUNCTION_BLOCK

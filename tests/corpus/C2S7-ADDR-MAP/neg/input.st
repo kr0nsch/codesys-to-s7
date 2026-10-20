@@ -1,0 +1,3 @@
+VAR_GLOBAL
+    xIn : BOOL;
+END_VAR

@@ -1,0 +1,6 @@
+FUNCTION_BLOCK FB_Case
+VAR
+    n : INT;
+END_VAR
+n := n + 1;
+END_FUNCTION_BLOCK

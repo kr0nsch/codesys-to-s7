@@ -1,0 +1,6 @@
+FUNCTION_BLOCK FB_Case
+VAR
+    tPulse : TON;
+END_VAR
+tPulse(IN := NOT tPulse.Q, PT := T#1S);
+END_FUNCTION_BLOCK

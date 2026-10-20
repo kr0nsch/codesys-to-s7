@@ -1,0 +1,7 @@
+FUNCTION_BLOCK FB_Case
+VAR
+    p : POINTER TO INT;
+    a : INT;
+END_VAR
+p := ADR(a);
+END_FUNCTION_BLOCK

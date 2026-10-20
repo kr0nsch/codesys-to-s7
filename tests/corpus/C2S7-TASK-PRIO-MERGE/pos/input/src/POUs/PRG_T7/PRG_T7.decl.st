@@ -1,0 +1,4 @@
+PROGRAM PRG_T7
+VAR
+    i : INT;
+END_VAR

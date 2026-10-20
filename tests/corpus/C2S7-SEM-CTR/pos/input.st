@@ -1,0 +1,7 @@
+FUNCTION_BLOCK FB_Case
+VAR
+    c : CTU;
+    x : BOOL;
+END_VAR
+c(CU := x, PV := 10);
+END_FUNCTION_BLOCK

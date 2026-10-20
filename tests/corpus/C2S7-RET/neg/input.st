@@ -1,0 +1,3 @@
+VAR_GLOBAL RETAIN
+    nHours : DINT;
+END_VAR

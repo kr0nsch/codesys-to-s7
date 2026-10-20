@@ -1,0 +1,85 @@
+# Обратные правила c2s7 к строкам «авто» таблицы s7-to-codesys docs/MAPPING.md @ 2285760c (ТЗ M5).
+# line — номер строки в их MAPPING.md; cds — пример выхода s7conv (ST CODESYS) внутри тела или объявления ФБ;
+# expect — фрагмент SCL, который c2s7 обязан выдать (тест tests/unit/test_reverse_rules.py проверяет каждую
+# запись; полное кольцо — tests/ring). Строки «проверка»/TODO обратными правилами не зеркалируются.
+# kind: body — оператор тела; decl — объявление VAR; type — тип переменной; layout — объект раскладки.
+
+- {line: 19, s7: 'FUNCTION_BLOCK "FB_X"', kind: layout, cds: "FUNCTION_BLOCK FB_X", expect: 'FUNCTION_BLOCK "FB_X"'}
+- {line: 20, s7: 'FUNCTION "FC_X" : Real', kind: layout, cds: "FUNCTION FC_X : REAL", expect: 'FUNCTION "FC_X" : Real'}
+- {line: 21, s7: 'ORGANIZATION_BLOCK "Main"', kind: ring, cds: "PROGRAM PRG_Main + tasks.json sources «Main (OB1)»", expect: 'ORGANIZATION_BLOCK "Main"'}
+- {line: 22, s7: 'DATA_BLOCK с VAR (глобальный)', kind: layout, cds: "{attribute 'qualified_only'} VAR_GLOBAL", expect: 'DATA_BLOCK "GVL_X"'}
+- {line: 23, s7: 'экземплярный DATA_BLOCK "DB" "FB"', kind: ring, cds: "GVL_InstanceDBs: DB : FB;", expect: 'DATA_BLOCK "DB_P101"'}
+- {line: 24, s7: 'DATA_BLOCK "DB" "UDT_X"', kind: ring, cds: "GVL_InstanceDBs: DB : UDT_X;", expect: 'DATA_BLOCK "DB_RecipeActive"'}
+- {line: 25, s7: 'DATA_BLOCK "T_DB" IEC_TIMER', kind: layout, cds: "GVL_InstanceDBs: T_DB : TON;", expect: "IEC_TIMER"}
+- {line: 27, s7: 'TYPE "UDT_X" STRUCT', kind: layout, cds: "TYPE UDT_X : STRUCT a : INT; END_STRUCT END_TYPE", expect: 'TYPE "UDT_X"'}
+- {line: 28, s7: "анонимный Struct", kind: ring, cds: "DUT ST_<блок>_<поле>", expect: "Struct"}
+- {line: 39, s7: "VAR_INPUT, VAR_OUTPUT, VAR_IN_OUT", kind: decl, cds: "VAR_INPUT a : BOOL; END_VAR", expect: "VAR_INPUT"}
+- {line: 40, s7: "VAR (статические ФБ)", kind: decl, cds: "VAR a : INT; END_VAR", expect: "   VAR "}
+- {line: 42, s7: "VAR NON_RETAIN", kind: decl, cds: "VAR a : INT; END_VAR", expect: "a : Int;"}
+- {line: 44, s7: "VAR_TEMP в ФБ и OB", kind: decl, cds: "VAR_TEMP t : INT; END_VAR", expect: "VAR_TEMP"}
+- {line: 45, s7: "VAR_TEMP в FC", kind: fc, cds: "VAR t : INT; END_VAR", expect: "VAR_TEMP"}
+- {line: 46, s7: "VAR CONSTANT", kind: decl, cds: "VAR CONSTANT C : INT := 3; END_VAR", expect: "VAR CONSTANT"}
+- {line: 50, s7: "атрибуты InstructionName, LibVersion", kind: decl, cds: "VAR t : TON; END_VAR", expect: "{InstructionName := 'TON_TIME'; LibVersion := '1.0'}"}
+- {line: 55, s7: "символы вне ASCII, пробелы в именах", kind: note, cds: "транслитерация s7conv необратима", expect: ""}
+- {line: 61, s7: "Bool, Byte, Word, DWord, LWord", kind: type, cds: "WORD", expect: "Word"}
+- {line: 62, s7: "SInt…ULInt", kind: type, cds: "UDINT", expect: "UDInt"}
+- {line: 63, s7: "Real, LReal", kind: type, cds: "LREAL", expect: "LReal"}
+- {line: 64, s7: "Time", kind: type, cds: "TIME", expect: "Time"}
+- {line: 65, s7: "LTime", kind: type, cds: "LTIME", expect: "LTime"}
+- {line: 67, s7: "Date", kind: type, cds: "DATE", expect: "Date"}
+- {line: 68, s7: "Time_Of_Day", kind: type, cds: "TOD", expect: "Time_Of_Day"}
+- {line: 69, s7: "Date_And_Time", kind: type, cds: "DT", expect: "Date_And_Time"}
+- {line: 71, s7: "String", kind: type, cds: "STRING(254)", expect: "String[254]"}
+- {line: 72, s7: "String[n], WString[n]", kind: type, cds: "STRING(20)", expect: "String[20]"}
+- {line: 74, s7: "Array[a..b] of T", kind: type, cds: "ARRAY[1..8] OF REAL", expect: "Array[1..8] of Real"}
+- {line: 76, s7: '"UDT_X", "FB_X"', kind: type, cds: "UDT_DeviceStatus", expect: '"UDT_DeviceStatus"'}
+- {line: 86, s7: "TON_TIME, TOF_TIME, TP_TIME", kind: type, cds: "TON", expect: "TON_TIME"}
+- {line: 89, s7: "IEC_TIMER", kind: layout, cds: "T_DB : TON (GVL_InstanceDBs)", expect: "IEC_TIMER"}
+- {line: 90, s7: "R_TRIG", kind: type, cds: "R_TRIG", expect: "R_TRIG"}
+- {line: 124, s7: "NORM_X", kind: ring, cds: "F_NormX(rMin := 0.0, rValue := x, rMax := 1.0)", expect: "NORM_X(MIN := "}
+- {line: 125, s7: "SCALE_X", kind: ring, cds: "F_ScaleX(rMin := 0.0, rValue := x, rMax := 1.0)", expect: "SCALE_X(MIN := "}
+- {line: 127, s7: "LIMIT(MN := a, IN := x, MX := b)", kind: body, cds: "r := LIMIT(0, r, 10);", expect: "LIMIT(MN := 0, IN := #r, MX := 10)"}
+- {line: 128, s7: "MIN, MAX", kind: body, cds: "r := MAX(r, 1);", expect: "MAX(IN1 := #r, IN2 := 1)"}
+- {line: 129, s7: "SEL, MUX", kind: body, cds: "r := SEL(b, 1, 2);", expect: "SEL(G := #b, IN0 := 1, IN1 := 2)"}
+- {line: 130, s7: "ABS, SQRT, …, EXPT", kind: body, cds: "x := EXPT(x, 2.0);", expect: "#x := #x ** 2.0;"}
+- {line: 131, s7: "SQR(x)", kind: note, cds: "x * x (s7conv) — обратно не восстанавливается: эквивалентно", expect: ""}
+- {line: 134, s7: "SHL, SHR, ROL, ROR", kind: body, cds: "w := SHL(w, 2);", expect: "SHL(IN := #w, N := 2)"}
+- {line: 135, s7: "CONCAT, LEN, LEFT, …", kind: body, cds: "s := CONCAT(s, 'x');", expect: "CONCAT(IN1 := #s, IN2 := 'x')"}
+- {line: 136, s7: "X_TO_Y", kind: body, cds: "x := INT_TO_REAL(i);", expect: "INT_TO_REAL(#i)"}
+- {line: 150, s7: "T#5s, TIME#1h30m", kind: body, cds: "t := T#1h30m;", expect: "T#1H30M"}
+- {line: 152, s7: "LT#5s", kind: body, cds: "lt := LTIME#5s;", expect: "LT#5S"}
+- {line: 154, s7: "D#, TOD#, DT#", kind: body, cds: "d := D#2024-01-31;", expect: "D#2024-01-31"}
+- {line: 155, s7: "16#FF, 2#1010, 8#17", kind: body, cds: "w := 16#FF;", expect: "16#FF"}
+- {line: 156, s7: "B#16#0F, W#16#FFFF", kind: body, cds: "w := WORD#16#FFFF;", expect: "WORD#16#FFFF"}
+- {line: 157, s7: "L#100", kind: body, cds: "d := DINT#100;", expect: "DINT#100"}
+- {line: 158, s7: "INT#-5, REAL#1.5, BOOL#TRUE", kind: body, cds: "i := INT#-5;", expect: "INT#-5"}
+- {line: 159, s7: "'текст'", kind: body, cds: "s := 'a$'b';", expect: "'a$'b'"}
+- {line: 160, s7: "WSTRING#'abc'", kind: body, cds: "ws := \"abc\";", expect: "WSTRING#'abc'"}
+- {line: 168, s7: "#x", kind: body, cds: "x := 1.0;", expect: "#x := 1.0;"}
+- {line: 169, s7: "&", kind: body, cds: "b := b AND b;", expect: "#b AND #b"}
+- {line: 170, s7: "a ** b", kind: body, cds: "x := EXPT(x, 3.0);", expect: "#x ** 3.0"}
+- {line: 171, s7: "MOD, NOT, AND, OR, XOR, сравнения", kind: body, cds: "b := NOT (i MOD 2 = 0) XOR b;", expect: "NOT (#i MOD 2 = 0) XOR #b"}
+- {line: 175, s7: "x += e", kind: note, cds: "x := x + e (s7conv) — обратно как присваивание: эквивалентно", expect: ""}
+- {line: 177, s7: "#w.%X3", kind: body, cds: "b := w.3;", expect: "#w.%X3"}
+- {line: 181, s7: "IF/CASE/FOR/WHILE/REPEAT/EXIT/CONTINUE/RETURN", kind: body, cds: "FOR i := 1 TO 3 DO IF b THEN EXIT; END_IF END_FOR", expect: "END_FOR;"}
+- {line: 182, s7: "REGION", kind: ring, cds: "// REGION X ... // END_REGION X", expect: "REGION "}
+- {line: 184, s7: "#FC_X := ...", kind: fc, cds: "FC_X := 1;", expect: "#FC_X := 1;"}
+- {line: 187, s7: "комментарии", kind: body, cds: "x := 1.0; // комментарий", expect: "// комментарий"}
+- {line: 188, s7: "пустые строки", kind: note, cds: "не сравниваются (norm.comments)", expect: ""}
+- {line: 197, s7: '"DB".m', kind: gvl, cds: "GVL_X.a := 1;", expect: '"GVL_X".a := 1;'}
+- {line: 198, s7: '"IDB".m, "IDB"(...)', kind: ring, cds: "GVL_InstanceDBs.DB_P101.runCmd", expect: '"DB_P101".runCmd'}
+- {line: 199, s7: '"Тег" с адресом', kind: ring, cds: "GVL_IO.P101_Run", expect: '"P101_Run"'}
+- {line: 200, s7: '"Тег" без адреса', kind: note, cds: "GVL_Tags в корпусе нет", expect: ""}
+- {line: 201, s7: "константа пользователя", kind: gvlconst, cds: "VAR_GLOBAL CONSTANT C_MAX : INT := 5; END_VAR", expect: "User constants"}
+- {line: 204, s7: "%I0.0, %Q4.1, %M12.1", kind: addr, cds: "%IX0.0", expect: "%I0.0"}
+- {line: 205, s7: "%IB3, %IW64, %QW80, %MD20", kind: addr, cds: "%IW32", expect: "%IW64"}
+- {line: 242, s7: "VAR RETAIN в глобальном DB", kind: gvlretain, cds: "VAR_GLOBAL RETAIN r : REAL; END_VAR", expect: "VAR RETAIN"}
+- {line: 244, s7: "NON_RETAIN", kind: gvl, cds: "VAR_GLOBAL a : INT; END_VAR", expect: "NON_RETAIN"}
+- {line: 246, s7: "экземплярный DB", kind: ring, cds: "GVL_InstanceDBs", expect: 'DATA_BLOCK "DB_Mode"'}
+- {line: 248, s7: "BEGIN a := 5;", kind: gvl, cds: "VAR_GLOBAL a : INT := 5; END_VAR", expect: "a : Int := 5;"}
+- {line: 249, s7: "BEGIN cfg.high := 16.0;", kind: ring, cds: "cfg : UDT := (high := 16.0)", expect: "pressureCfg.rangeHigh := 16.0;"}
+- {line: 250, s7: "BEGIN arr[1] := 0.5;", kind: ring, cds: "arr : ARRAY[..] OF REAL := [..]", expect: "doseStep"}
+- {line: 251, s7: "BEGIN feedbackTime := T#5S; (экземплярный)", kind: ring, cds: "DB_P101 : FB_Motor := (feedbackTime := T#5S)", expect: "feedbackTime := T#5S;"}
+- {line: 252, s7: "BEGIN типизированного DB", kind: ring, cds: "DB : UDT := (поле := ...)", expect: "name := 'SUMMER';"}
+- {line: 265, s7: "OB1 «Main»", kind: ring, cds: "PRG_Main в MainTask (sources «Main (OB1)»)", expect: 'ORGANIZATION_BLOCK "Main"'}
+- {line: 266, s7: "OB30…OB38", kind: ring, cds: "PRG_Cyclic_interrupt в Task_OB30", expect: 'ORGANIZATION_BLOCK "Cyclic interrupt"'}
