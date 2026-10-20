@@ -95,6 +95,7 @@ class LSym:
     decl: A.VarDecl
     type: A.TypeRef
     constant: bool = False
+    tag: str | None = None  # AT в переменной POU → глобальный тег (у FB/FC S7 адресов у членов нет)
 
 
 def _upper(s: str) -> str:
@@ -1018,6 +1019,11 @@ class Converter:
                     and (self.g.get(tname.upper(), GSym("x", "")).kind == "fb" or tname.upper() in SL.STD_FB)
                 ):
                     self.add("C2S7-POU-FBINFC", self.at(d), f"{d.name} : {tname}")
+                if d.address and not self.ring and kind in ("VAR", "VAR_INPUT", "VAR_OUTPUT"):
+                    tag = f"{pou.name}_{d.name}"
+                    self._tag_from_at(pou.name, d, GSym("tag", d.name, s7name=tag), self.at(d))
+                    self.loc[d.name.upper()].tag = tag
+                    continue
                 m = self._member(d)
                 needs_assign = d.init is not None and (target == "VAR_TEMP" or (is_fc and target == "VAR_OUTPUT"))
                 if needs_assign and not block.constant:
@@ -1029,6 +1035,8 @@ class Converter:
             for tb in todos_here:
                 self.add("C2S7-RING-TODO", Origin(self.origin.file, tb.line), tb.code[0][:80], tb.reason)
                 sec.members.append(S7Member("", "", raw="\n".join(tb.code)))
+            if block.decls and not sec.members:
+                continue  # все переменные секции ушли в теги (AT)
             blk.sections.append(sec)
         if stat_members:
             self.blocks.append(
@@ -1462,6 +1470,8 @@ class Converter:
         head = path[0]
         hu = head.upper()
         # локальная переменная или результат функции
+        if hu in self.loc and self.loc[hu].tag:
+            return _rest(A.SclRef("tag", self.loc[hu].tag or "", pos=e.pos), path[1:], e.pos)
         if hu in self.loc or (self.pou and hu == self.pou.name.upper() and self.pou.kind == "FUNCTION"):
             if len(path) == 2 and hu in self.timer_rewrite and path[1].upper() in ("Q", "ET"):
                 return A.SclRef("local", self.timer_rewrite[hu][path[1].upper()], pos=e.pos)

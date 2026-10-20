@@ -254,6 +254,11 @@ def all_outputs(res: Result) -> dict[str, tuple[str, bool]]:
     files["roundtrip/MANUAL_STEPS.md"] = (manual_steps_md(res), False)
     for path, text in res.simaticml.items():
         files[path] = (text, False)
+    from c2s7.emit.probe import probe_files, probes_for
+
+    rules = {f.rule for f in res.collector.findings} | {r for f in res.collector.findings for r in f.related}
+    if probes_for(rules):
+        files.update(probe_files(rules))
     return files
 
 
