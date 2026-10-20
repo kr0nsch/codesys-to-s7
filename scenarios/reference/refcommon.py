@@ -109,6 +109,10 @@ def fmt(value: Any, typ: str) -> str:
     if typ in ("REAL", "LREAL"):
         r = repr(float(value))
         return r[:-2] if r.endswith(".0") else r
+    if typ.upper().startswith("STRING"):
+        return str(value)
+    if typ.upper() in ("WORD", "DWORD", "BYTE", "LWORD") and isinstance(value, int):
+        return str(value)
     return str(int(value))
 
 

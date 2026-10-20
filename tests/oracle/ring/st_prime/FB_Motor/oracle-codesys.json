@@ -1,0 +1,23 @@
+{
+  "format": "oracle-codesys/1",
+  "tool": "c2s7 0.1.0 tools/codesys/trace.py",
+  "codesys": "3.5.17.30",
+  "device": "CODESYS Control Win V3 (4096, 0000 0001, 3.5.17.30)",
+  "date": "2026-10-20",
+  "task": "TraceTask",
+  "period_ms": 10,
+  "cycles": 5207,
+  "sampled_cycles": 97,
+  "scenarios": [
+    "AutoStartOk",
+    "NoFeedbackTimeout",
+    "FeedbackLost",
+    "UnexpectedFeedback",
+    "ThermalTripManual",
+    "BumplessAutoToManual",
+    "CustomFeedbackTime"
+  ],
+  "regime": "R2",
+  "inputs_from": "tests/fixtures/s7-to-codesys/scenarios/FB_Motor.csv (строка держится до t_ms следующей)",
+  "code": "ST′: s7conv --timers standard из tia/sources c2s7"
+}

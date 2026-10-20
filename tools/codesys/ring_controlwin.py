@@ -88,23 +88,30 @@ def main() -> int:
     if not res_path.exists():
         print("нет test-results.json:", proc.stderr[-2000:])
         return 1
+    return summarize(res_path, started_here, proc.returncode)
+
+
+def summarize(res_path: Path, started_here: bool, returncode: int = 0) -> int:
     data = json.loads(res_path.read_text(encoding="utf-8"))
+    suites = []
+    for s in data.get("suites", []):
+        cases = s.get("cases", [])
+        name = cases[0]["class_name"].rsplit(".", 1)[-1] if cases else s.get("name")
+        suites.append({"name": name, "tests": len(cases), "failed": [c["name"] for c in cases if c.get("status") != "PASS"]})
     summary = {
         "what": "кейс 1, R1 в CODESYS Control Win: ST′ (s7conv @ 2285760c из tia/sources c2s7) + coUnit из gen-tests",
-        "codesys": "3.5.17.30",
+        "codesys": data.get("codesys_version"),
+        "framework": data.get("framework"),
         "totals": data.get("totals"),
-        "suites": [
-            {"name": s.get("name"), "tests": len(s.get("tests", [])), "failed": [t.get("name") for t in s.get("tests", []) if t.get("status") != "passed"]}
-            for s in data.get("suites", [])
-        ],
+        "suites": suites,
         "build": data.get("build"),
-        "date": data.get("finished") or data.get("date"),
+        "date": (data.get("started") or "")[:10],
         "runtime_started_here": started_here,
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     print(json.dumps(summary["totals"], ensure_ascii=False))
-    return 0 if proc.returncode == 0 else 1
+    return 0 if returncode == 0 and data.get("ok") else 1
 
 
 if __name__ == "__main__":

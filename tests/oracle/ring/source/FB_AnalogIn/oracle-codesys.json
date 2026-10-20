@@ -1,0 +1,22 @@
+{
+  "format": "oracle-codesys/1",
+  "tool": "c2s7 0.1.0 tools/codesys/trace.py",
+  "codesys": "3.5.17.30",
+  "device": "CODESYS Control Win V3 (4096, 0000 0001, 3.5.17.30)",
+  "date": "2026-10-20",
+  "task": "TraceTask",
+  "period_ms": 10,
+  "cycles": 416,
+  "sampled_cycles": 88,
+  "scenarios": [
+    "ScalingPoints",
+    "HighLimitsHysteresis",
+    "LowLimitsHysteresis",
+    "ChannelDiagnostics",
+    "Simulation",
+    "CustomRanges"
+  ],
+  "regime": "R2",
+  "inputs_from": "tests/fixtures/s7-to-codesys/scenarios/FB_AnalogIn.csv (строка держится до t_ms следующей)",
+  "code": "ST s7-to-codesys @ 2285760c (фикстура)"
+}

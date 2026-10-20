@@ -1,0 +1,111 @@
+{
+  "what": "CDS_SR/CDS_RS (ST′ от s7conv) против Standard.SR/RS в CODESYS Control Win 3.5.17.30",
+  "sequence": [
+    {
+      "set": false,
+      "reset": false
+    },
+    {
+      "set": true,
+      "reset": false
+    },
+    {
+      "set": false,
+      "reset": false
+    },
+    {
+      "set": true,
+      "reset": true
+    },
+    {
+      "set": false,
+      "reset": true
+    },
+    {
+      "set": false,
+      "reset": false
+    },
+    {
+      "set": true,
+      "reset": true
+    },
+    {
+      "set": true,
+      "reset": false
+    },
+    {
+      "set": true,
+      "reset": true
+    },
+    {
+      "set": false,
+      "reset": true
+    },
+    {
+      "set": true,
+      "reset": true
+    },
+    {
+      "set": false,
+      "reset": false
+    }
+  ],
+  "sr_standard": [
+    false,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true
+  ],
+  "sr_cds": [
+    false,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true
+  ],
+  "rs_standard": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "rs_cds": [
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false
+  ],
+  "sr_equal": true,
+  "rs_equal": true
+}

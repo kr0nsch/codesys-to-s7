@@ -1,0 +1,54 @@
+{
+  "what": "кейс 1, R1 в CODESYS Control Win: ST′ (s7conv @ 2285760c из tia/sources c2s7) + coUnit из gen-tests",
+  "codesys": "3.5.17.30",
+  "framework": "coUnit (CfUnit) 1.2.0.0",
+  "totals": {
+    "failed": 0,
+    "passed": 39,
+    "reported_failed": 0,
+    "reported_successful": 39,
+    "reported_suites": 6,
+    "reported_tests": 39,
+    "skipped": 0,
+    "suites": 6,
+    "tests": 39
+  },
+  "suites": [
+    {
+      "name": "fbAlarmDelay_ScenarioTest",
+      "tests": 8,
+      "failed": []
+    },
+    {
+      "name": "fbAnalogIn_ScenarioTest",
+      "tests": 6,
+      "failed": []
+    },
+    {
+      "name": "fbMotor_ScenarioTest",
+      "tests": 7,
+      "failed": []
+    },
+    {
+      "name": "fbPumpAlternation_ScenarioTest",
+      "tests": 6,
+      "failed": []
+    },
+    {
+      "name": "fbSequencer_ScenarioTest",
+      "tests": 6,
+      "failed": []
+    },
+    {
+      "name": "fbTotalizer_ScenarioTest",
+      "tests": 6,
+      "failed": []
+    }
+  ],
+  "build": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "date": "2026-10-20",
+  "runtime_started_here": false
+}

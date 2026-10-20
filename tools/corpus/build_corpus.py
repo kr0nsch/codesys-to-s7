@@ -27,14 +27,14 @@ from semcmp import compare  # noqa: E402
 WORK = REPO / "build" / "corpus"
 
 
-def compare_all() -> list[str]:
+def compare_all(export_root: Path | None = None) -> list[str]:
     from corpus.common import load_specs
 
     diffs: list[str] = []
     for name, cs in load_specs().items():
         if not cs.in_codesys:
             continue
-        exp = cs.path / "source.cds.xml"
+        exp = (export_root / cs.lang / name if export_root else cs.path) / "source.cds.xml"
         if not exp.exists():
             diffs.append(f"{name}: нет {exp.relative_to(REPO)}")
             continue
@@ -50,7 +50,8 @@ def compare_all() -> list[str]:
     return diffs
 
 
-def build() -> dict[str, object]:
+def build(export_root: Path | None = None) -> dict[str, object]:
+    """export_root — куда писать экспорты (по умолчанию — закоммиченные corpus/…; тесты пишут во временный каталог)."""
     import cdsrun
     import online
     from corpus.common import case, load_specs
@@ -63,10 +64,16 @@ def build() -> dict[str, object]:
     xml.write_text(B.pretty(B.project_xml(c, "Zarechnaya")), encoding="utf-8")
     specs = load_specs()
     exports: list[dict[str, object]] = [
-        {"path": str(cs.path / "source.cds.xml"), "objects": [name]} for name, cs in specs.items() if cs.in_codesys
+        {"path": str((export_root / cs.lang / name if export_root else cs.path) / "source.cds.xml"), "objects": [name]}
+        for name, cs in specs.items()
+        if cs.in_codesys
     ]
-    exports.append({"path": str(REPO / "corpus" / "application.cds.xml"), "application": True})
-    exports += [{"path": str(REPO / "corpus" / "duts" / f"{d.name}.cds.xml"), "objects": [d.name]} for d in duts]
+    root = export_root or REPO / "corpus"
+    for e in exports:
+        Path(str(e["path"])).parent.mkdir(parents=True, exist_ok=True)
+    (root / "duts").mkdir(parents=True, exist_ok=True)
+    exports.append({"path": str(root / "application.cds.xml"), "application": True})
+    exports += [{"path": str(root / "duts" / f"{d.name}.cds.xml"), "objects": [d.name]} for d in duts]
     job = {
         "project": str(WORK / "zarechnaya.project"),
         "device": cdsrun.CONTROL_WIN,
