@@ -51,10 +51,42 @@ Name, Path, Data Type, Value, Comment. Импорт — через GUI TIA (св
 `PlcTags.csv`, `ob_config.json`, `BlockProperties.csv` — в форматах s7conv (их читает
 `s7conv convert --tags --ob-config`); `TASKS.md`, `IO_MAP.csv`, `MANUAL_STEPS.md` — для человека.
 
-## SimaticML `tia/simaticml/`
+## SimaticML `tia/simaticml/` (FlgNet)
 
-Блоки LD/FBD — FlgNet (`Document/Engineering version` по `--tia V19|V21`). Подробности формата,
-UId и проверка XSD — раздел «FlgNet» ниже (этап B).
+POU на LD и FBD при `--tia V19|V21` (умолчание `--graphics simaticml`) выдаются документами
+SimaticML: `Document` → `Engineering version` → `SW.Blocks.FB|FC` с интерфейсом
+(`Sections`, пространство имён `Interface/v5`) и сетями `SW.Blocks.CompileUnit` с `FlgNet`
+(`NetworkSource/FlgNet/v5`). Такой блок в `tia/sources/` не попадает. Через GUI TIA SimaticML не
+импортируется — только Openness (у автора не проверено; процедура — `HARDWARE_VALIDATION.md`).
+
+**Закрытое подмножество** (реестр `src/c2s7/emit/simaticml/parts.py`, у каждой части — источник):
+
+| Часть | LAD/FBD | Источник |
+|---|---|---|
+| `Contact` (+ `Negated operand` — НЗ), `Coil`, `SCoil`, `RCoil`, `Not`, `O` (Card), `PBox` | LAD | эталонный набор bulaofen @ e131b257 [M] |
+| `Gt/Ge/Lt/Le/Eq/Ne` (SrcType), `Add/Sub/Mul/Div/Mod` (SrcType, Card), `Move` (Card), `TON` (Version 1.0, Instance, time_type) | оба | эталонный набор |
+| `NBox`, `TOF`, `TP` | оба | по аналогии с `PBox`/`TON` |
+| `A`, `X` (Card) | FBD | имена — реестр s7-lint-vscode @ 0735f8ff (FBD-bit-logic), форма — по `O` |
+| `Jump` + `Access Scope="Label"`, `Labels/LabelDeclaration` | оба | по схеме LADFBD_v5, **эталона нет** |
+
+Отображение: контакт P/N → `Contact` + `PBox`/`NBox` с битом памяти в статике (тот же бит, что в
+SCL-пути; только для ветви от шины); параллель → `O`; общие элементы сети строятся один раз
+(провод с несколькими приёмниками); инверсная катушка → `Not` + `Coil`; в FBD отрицание NOT уходит
+в `Negated` входа приёмника, логический результат пишется через `Coil`, числовой выход бокса —
+проводом прямо на операнд. Всё остальное (SEL, LIMIT, вызовы своих ФБ, CTU, EN/ENO, RETURN,
+массивы и т. д.) — блок целиком в SCL с находкой C2S7-GFX-SCL.
+
+**Детерминизм.** UId — по обходу, с 21 в каждой сети (провода — после частей), ID объектов —
+шестнадцатеричный счётчик, `DocumentInfo/Created` — фиксированная метка `2026-10-19T00:00:00Z`
+(не время экспорта TIA). `AutoNumber` = true, `Number` — порядковый. Тексты (`MultilingualText`) —
+культура `en-US` (есть в любой установке TIA), текст — как в CODESYS. `Namespace` — только V21.
+
+**Проверки.** Свой валидатор (`validate.py`, всегда; правила V-ENG, V-UID, V-REF, V-PIN, V-ONCE,
+V-PART, V-TEMPLATE, V-VERSION, V-REACH, V-SCOPE, у каждого — негатив в `tests/formats`), XSD V19/V21
+по фрагментам `FlgNet` и `Sections` (job `xsd`, XSD скачиваются `tools/fetch_xsd.py` по SHA-256),
+обратное чтение `verify/s7xml_reader.py` → `c2s7.sim` против понижения источника (самосогласованность)
+и golden `tests/golden/tia/*.xml`. Прохождение XSD подтверждением формата не считается: эталонный
+набор слабый (V21, MIT, происхождение [M]), импорт в TIA не проверен.
 
 ## Детерминизм
 

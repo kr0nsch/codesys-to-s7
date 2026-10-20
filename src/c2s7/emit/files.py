@@ -44,7 +44,7 @@ def source_files(res: Result) -> list[tuple[str, str]]:
     out = []
     n = 0
     for b in res.blocks:
-        if b.kind == "ORGANIZATION_BLOCK":
+        if b.kind == "ORGANIZATION_BLOCK" or b.flgnet:
             continue
         n += 1
         out.append((f"tia/sources/{n:03d}_{safe(b.name)}.{b.ext}", block_text(b, head)))

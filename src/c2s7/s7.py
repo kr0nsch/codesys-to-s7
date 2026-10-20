@@ -59,6 +59,7 @@ class S7Block:
     language: str = "ST"
     deps: set[str] = field(default_factory=set)
     order: int = 0  # 0 — типы, 1 — глобальные DB, 2 — FC/FB, 3 — экземплярные DB, 4 — OB
+    flgnet: str | None = None  # путь tia/simaticml/*.xml, если блок выдан FlgNet (тогда не в sources)
 
     @property
     def ext(self) -> str:
