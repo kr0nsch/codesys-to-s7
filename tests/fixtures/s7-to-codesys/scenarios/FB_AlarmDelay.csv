@@ -1,0 +1,56 @@
+scenario,cycle,t_ms,in.condition:BOOL,in.enable:BOOL,in.ack:BOOL,in.onDelay:TIME,in.offDelay:TIME,out.active:BOOL,out.unacked:BOOL,out.alarm:BOOL,out.state:INT,out.count:DINT,boundary,comment
+ActivateAckClear,1,0,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,норма
+ActivateAckClear,2,1000,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,условие появилось; отсчёт onDelay с 1.0 с
+ActivateAckClear,3,5800,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,4.8 с < 5 с: ещё не активен
+ActivateAckClear,4,6000,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,TRUE,"5.0 с = onDelay: активен, не квитирован, появление №1"
+ActivateAckClear,5,6200,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,"активен, не квитирован"
+ActivateAckClear,6,7000,TRUE,TRUE,TRUE,T#5000MS,T#2000MS,TRUE,FALSE,TRUE,2,1,FALSE,"квитирование: активен, квитирован"
+ActivateAckClear,7,7500,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,FALSE,TRUE,2,1,FALSE,кнопка отпущена
+ActivateAckClear,8,9000,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,FALSE,TRUE,2,1,FALSE,"условие пропало; отсчёт offDelay с 9.0 с, сигнал держится"
+ActivateAckClear,9,10800,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,FALSE,TRUE,2,1,FALSE,1.8 с < 2 с: ещё активен
+ActivateAckClear,10,11000,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,1,TRUE,"2.0 с = offDelay: снят, квитирован — норма"
+ActivateAckClear,11,11200,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,1,FALSE,норма
+ClearedBeforeAck,1,0,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,условие
+ClearedBeforeAck,2,5200,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,"активен, появление №1"
+ClearedBeforeAck,3,6000,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,условие пропало
+ClearedBeforeAck,4,8200,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,TRUE,TRUE,3,1,FALSE,"через 2.2 с снят, но не квитирован: состояние 3, индикация есть"
+ClearedBeforeAck,5,9000,FALSE,TRUE,TRUE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,1,FALSE,квитирование: норма
+ClearedBeforeAck,6,9500,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,1,FALSE,норма
+ChatterSuppressed,1,0,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,условие
+ChatterSuppressed,2,3000,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,пропало через 3 с
+ChatterSuppressed,3,3500,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,снова; отсчёт заново с 3.5 с
+ChatterSuppressed,4,8000,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,4.5 с < 5 с: не активен
+ChatterSuppressed,5,8300,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,пропало
+ChatterSuppressed,6,9000,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,появлений нет
+ReturnDuringOffDelay,1,0,TRUE,TRUE,FALSE,T#5000MS,T#6000MS,FALSE,FALSE,FALSE,0,0,FALSE,"условие, offDelay 6 с"
+ReturnDuringOffDelay,2,5200,TRUE,TRUE,FALSE,T#5000MS,T#6000MS,TRUE,TRUE,TRUE,1,1,FALSE,"активен, появление №1"
+ReturnDuringOffDelay,3,5500,TRUE,TRUE,TRUE,T#5000MS,T#6000MS,TRUE,FALSE,TRUE,2,1,FALSE,квитирован
+ReturnDuringOffDelay,4,6000,FALSE,TRUE,FALSE,T#5000MS,T#6000MS,TRUE,FALSE,TRUE,2,1,FALSE,условие пропало; offDelay с 6.0 с
+ReturnDuringOffDelay,5,7000,TRUE,TRUE,FALSE,T#5000MS,T#6000MS,TRUE,FALSE,TRUE,2,1,FALSE,условие вернулось; onDelay заново с 7.0 с
+ReturnDuringOffDelay,6,11800,TRUE,TRUE,FALSE,T#5000MS,T#6000MS,TRUE,FALSE,TRUE,2,1,FALSE,"onDelay 4.8 с, offDelay 5.8 с: ещё активен по задержке снятия"
+ReturnDuringOffDelay,7,12200,TRUE,TRUE,FALSE,T#5000MS,T#6000MS,TRUE,FALSE,TRUE,2,1,FALSE,"onDelay истёк раньше offDelay: активен без перерыва, счёт не растёт"
+ReturnDuringOffDelay,8,13000,FALSE,TRUE,FALSE,T#5000MS,T#6000MS,TRUE,FALSE,TRUE,2,1,FALSE,условие пропало; offDelay с 13.0 с
+ReturnDuringOffDelay,9,19200,FALSE,TRUE,FALSE,T#5000MS,T#6000MS,FALSE,FALSE,FALSE,0,1,FALSE,6.2 с: снят — норма
+NewActivationAfterOffDelay,1,0,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,условие
+NewActivationAfterOffDelay,2,5200,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,"активен, появление №1"
+NewActivationAfterOffDelay,3,6000,FALSE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,условие пропало
+NewActivationAfterOffDelay,4,7000,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,"вернулось; onDelay с 7.0 с, offDelay ещё идёт"
+NewActivationAfterOffDelay,5,8200,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,TRUE,TRUE,3,1,FALSE,"offDelay 2.2 с истёк: снят, не квитирован — состояние 3"
+NewActivationAfterOffDelay,6,12200,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,2,FALSE,"onDelay 5.2 с: активен снова, появление №2"
+NewActivationAfterOffDelay,7,13000,TRUE,TRUE,TRUE,T#5000MS,T#2000MS,TRUE,FALSE,TRUE,2,2,FALSE,квитирование
+Disabled,1,0,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,условие
+Disabled,2,5200,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,"активен, появление №1"
+Disabled,3,6000,TRUE,FALSE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,1,FALSE,выведен из работы: active и unacked сброшены сразу
+Disabled,4,7000,TRUE,FALSE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,1,FALSE,выведен
+Disabled,5,8500,TRUE,FALSE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,1,FALSE,выведен (задержка снятия внутри уже истекла)
+Disabled,6,9000,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,1,FALSE,"введён: условие есть, onDelay с 9.0 с"
+Disabled,7,14200,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,2,FALSE,"5.2 с: активен, появление №2"
+AckSameCallAsActivation,1,0,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,условие
+AckSameCallAsActivation,2,5200,TRUE,TRUE,TRUE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,появление и фронт ack в одном вызове: не квитирован
+AckSameCallAsActivation,3,5400,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,не квитирован
+AckSameCallAsActivation,4,5600,TRUE,TRUE,TRUE,T#5000MS,T#2000MS,TRUE,FALSE,TRUE,2,1,FALSE,квитирован
+AckHeldDuringActivation,1,0,TRUE,TRUE,TRUE,T#5000MS,T#2000MS,FALSE,FALSE,FALSE,0,0,FALSE,условие; кнопка нажата заранее — фронт ack до появления
+AckHeldDuringActivation,2,5200,TRUE,TRUE,TRUE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,появление №1 при удерживаемой кнопке: не квитирован
+AckHeldDuringActivation,3,5400,TRUE,TRUE,TRUE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,"кнопка всё ещё нажата, фронта нет: не квитирован"
+AckHeldDuringActivation,4,5600,TRUE,TRUE,FALSE,T#5000MS,T#2000MS,TRUE,TRUE,TRUE,1,1,FALSE,кнопка отпущена
+AckHeldDuringActivation,5,5800,TRUE,TRUE,TRUE,T#5000MS,T#2000MS,TRUE,FALSE,TRUE,2,1,FALSE,новый фронт: квитирован

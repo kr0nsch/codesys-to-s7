@@ -1,0 +1,88 @@
+{
+  "generator": "s7conv 0.1.0",
+  "tasks": [
+    {
+      "name": "MainTask",
+      "type": "cyclic",
+      "interval_ms": 10,
+      "priority": 15,
+      "pous": [
+        "PRG_Startup",
+        "PRG_Main"
+      ],
+      "sources": [
+        "Startup (OB100)",
+        "Main (OB1)"
+      ]
+    },
+    {
+      "name": "Task_OB30",
+      "type": "cyclic",
+      "interval_ms": 100,
+      "priority": 1,
+      "pous": [
+        "PRG_Cyclic_interrupt"
+      ],
+      "sources": [
+        "Cyclic interrupt (OB30)"
+      ]
+    }
+  ],
+  "obs": [
+    {
+      "name": "Cyclic interrupt",
+      "program": "PRG_Cyclic_interrupt",
+      "number": 30,
+      "number_origin": "ob-config",
+      "kind": "cyclic",
+      "task": "Task_OB30",
+      "interval_ms": 100,
+      "interval_origin": "ob-config",
+      "file": ".cache/s7-to-codesys@2285760c/samples/scl/OB_Cyclic.scl",
+      "line": 29,
+      "notes": []
+    },
+    {
+      "name": "Main",
+      "program": "PRG_Main",
+      "number": 1,
+      "number_origin": "ob-config",
+      "kind": "main",
+      "task": "MainTask",
+      "interval_ms": null,
+      "interval_origin": null,
+      "file": ".cache/s7-to-codesys@2285760c/samples/scl/OB_Main.scl",
+      "line": 41,
+      "notes": []
+    },
+    {
+      "name": "Startup",
+      "program": "PRG_Startup",
+      "number": 100,
+      "number_origin": "ob-config",
+      "kind": "startup",
+      "task": "MainTask",
+      "interval_ms": null,
+      "interval_origin": null,
+      "file": ".cache/s7-to-codesys@2285760c/samples/scl/OB_Startup.scl",
+      "line": 32,
+      "notes": []
+    },
+    {
+      "name": "Diagnostic error interrupt",
+      "program": "PRG_Diagnostic_error_interrupt",
+      "number": 82,
+      "number_origin": "ob-config",
+      "kind": "event",
+      "task": null,
+      "interval_ms": null,
+      "interval_origin": null,
+      "file": ".cache/s7-to-codesys@2285760c/samples/scl/OB_Startup.scl",
+      "line": 67,
+      "notes": []
+    }
+  ],
+  "manual": [
+    "PRG_Diagnostic_error_interrupt: Diagnostic error interrupt (OB82) — задача по событию не создаётся автоматически, настроить вручную"
+  ]
+}
