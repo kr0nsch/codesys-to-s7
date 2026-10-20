@@ -1,0 +1,47 @@
+# Просмотрщик миграции на GitHub Pages: статика `c2s7 site` (JSON + SVG + ES-модуль, без чужих доменов).
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt -e .
+      - name: Сборка сайта
+        env:
+          PYTHONIOENCODING: utf-8
+        run: python -m c2s7 site --out site-out
+      - uses: actions/configure-pages@v6.0.0
+      - uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: site-out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5.0.1

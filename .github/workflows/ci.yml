@@ -1,0 +1,159 @@
+# CI c2s7: проверки без CODESYS и TIA. Прогоны в CODESYS Control Win — локально (docs/TEST_REPORT.md).
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+  PYTHONIOENCODING: utf-8
+  S7_TO_CODESYS_SHA: 2285760c1c99ce4218d5356c75e93111828f8e3b
+  RUSTY_VERSION: v1.0.6
+  # SHA-256 файлов релиза RuSTy v1.0.6 (как в ci.yml s7-to-codesys @ 2285760c)
+  RUSTY_PLC_SHA256: cee05d9871b7a4dea66ad0e1a3a94cce858d28967c0bdecd16a821e3c621a6bf
+  RUSTY_STDLIB_SHA256: 17086c67d46cdba0a6acf8c3c8e3b594804053df3913dab2756ef555cb826129
+
+jobs:
+  checks:
+    name: lint, тесты, кольцо (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Зависимости
+        run: python -m pip install -r requirements-dev.txt -e .
+
+      - name: Клон s7-to-codesys @ 2285760c (оракул кольца)
+        run: |
+          git clone -q https://github.com/kr0nsch/s7-to-codesys.git .cache/s7-to-codesys@2285760c
+          git -C .cache/s7-to-codesys@2285760c -c advice.detachedHead=false checkout -q "$S7_TO_CODESYS_SHA"
+
+      - name: XSD SimaticML (по коммиту и SHA-256 в .cache/xsd)
+        run: python tools/fetch_xsd.py
+
+      - name: ruff
+        run: python -m ruff check . && python -m ruff format --check .
+
+      - name: mypy --strict
+        run: python -m mypy
+
+      - name: pytest (кольцо в c2s7.sim и stsim, корпус, форматы, свойства)
+        run: python -m pytest --cov=c2s7 --cov-branch --cov-report=json:build/coverage.json
+
+      - name: Пороги покрытия
+        run: python tools/check_coverage.py build/coverage.json
+
+      - name: Сгенерированное не устарело
+        run: |
+          python tools/gen_docs.py --check
+          python tools/corpus/gen_scenarios.py --check
+          python tools/make_data.py --check
+
+      - name: Детерминизм (SHA-256 zip и отчёта)
+        run: |
+          mkdir -p build/det
+          for c in "tests/fixtures/s7-to-codesys:ring" "corpus/zarechnaya.xml:corpus"; do
+            inp="${c%%:*}"; name="${c##*:}"
+            python -m c2s7 migrate "$inp" --out "build/det/$name" --zip "build/det/$name.zip" > /dev/null
+            python -m c2s7 migrate "$inp" --out "build/det/$name-2" --zip "build/det/$name-2.zip" > /dev/null
+            cmp "build/det/$name.zip" "build/det/$name-2.zip"
+          done
+          python - <<'EOF' > build/det/sha256.txt
+          import hashlib, pathlib
+          for p in ["build/det/ring.zip", "build/det/corpus.zip", "build/det/ring/MIGRATION_REPORT.json", "build/det/corpus/MIGRATION_REPORT.json"]:
+              print(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest(), p)
+          EOF
+          cat build/det/sha256.txt
+
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: det-${{ matrix.os }}
+          path: build/det/sha256.txt
+          retention-days: 7
+
+  determinism:
+    name: одинаковые байты на ubuntu и windows
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          pattern: det-*
+      - name: Сравнение SHA-256
+        run: diff det-ubuntu-latest/sha256.txt det-windows-latest/sha256.txt
+
+  xsd:
+    name: SimaticML по XSD V19/V21
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt -e .
+      - name: XSD (по коммиту и SHA-256 в .cache/xsd)
+        run: python tools/fetch_xsd.py
+      - name: Тесты форматов (XSD обязателен)
+        env:
+          REQUIRE_XSD: "1"
+        run: python -m pytest tests/formats -q
+
+  rusty:
+    name: RuSTy plc --check (ST′ не хуже источника)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: python -m pip install -r requirements-dev.txt -e .
+      - name: Клон s7-to-codesys @ 2285760c
+        run: |
+          git clone -q https://github.com/kr0nsch/s7-to-codesys.git .cache/s7-to-codesys@2285760c
+          git -C .cache/s7-to-codesys@2285760c -c advice.detachedHead=false checkout -q "$S7_TO_CODESYS_SHA"
+      - name: RuSTy ${{ env.RUSTY_VERSION }} (по SHA-256)
+        run: |
+          dir="$RUNNER_TEMP/rusty"
+          base="https://github.com/PLC-lang/rusty/releases/download/$RUSTY_VERSION"
+          mkdir -p "$dir"
+          curl -fsSL --retry 3 -o "$dir/plc" "$base/plc-linux-x86_64"
+          curl -fsSL --retry 3 -o "$dir/stdlib.tar.gz" "$base/stdlib-${RUSTY_VERSION#v}.tar.gz"
+          echo "$RUSTY_PLC_SHA256  $dir/plc" | sha256sum -c -
+          echo "$RUSTY_STDLIB_SHA256  $dir/stdlib.tar.gz" | sha256sum -c -
+          chmod +x "$dir/plc"
+          tar -xzf "$dir/stdlib.tar.gz" -C "$dir"
+          "$dir/plc" --version
+          echo "RUSTY_PLC=$dir/plc" >> "$GITHUB_ENV"
+          echo "RUSTY_STDLIB_INCLUDE=$(find "$dir" -type d -name include | head -1)" >> "$GITHUB_ENV"
+      - name: plc --check источника и ST′
+        run: python tools/check_rusty.py

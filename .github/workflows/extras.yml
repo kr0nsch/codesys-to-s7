@@ -1,0 +1,39 @@
+# Дополнительные проверки: e2e просмотрщика (Playwright из Python). plc-code, s7-lint и кейс 4 — P1 (docs/ROADMAP.md).
+name: Extras
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: e2e просмотрщика
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Зависимости
+        run: |
+          python -m pip install -r requirements-dev.txt -e . playwright==1.64.0
+          python -m playwright install --with-deps chromium
+      - name: Сайт и e2e
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          python -m c2s7 site --out build/site-out
+          python tools/e2e_smoke.py --site build/site-out --shots build/e2e
+      - uses: actions/upload-artifact@v7.0.2
+        if: ${{ !cancelled() }}
+        with:
+          name: e2e-screenshots
+          path: build/e2e/
+          retention-days: 7
