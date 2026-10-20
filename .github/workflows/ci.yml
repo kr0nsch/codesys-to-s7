@@ -104,7 +104,8 @@ jobs:
         with:
           pattern: det-*
       - name: Сравнение SHA-256
-        run: diff det-ubuntu-latest/sha256.txt det-windows-latest/sha256.txt
+        # print() в Windows пишет CRLF — сравниваются суммы, а не окончания строк
+        run: diff --strip-trailing-cr det-ubuntu-latest/sha256.txt det-windows-latest/sha256.txt
 
   xsd:
     name: SimaticML по XSD V19/V21
