@@ -20,7 +20,15 @@ def test_import_per_language(repo) -> None:  # type: ignore[no-untyped-def]
     assert run_probes.cmd_import() in (0, 1)
     res = json.loads((repo / "build" / "probes" / "import.json").read_text(encoding="utf-8"))
     created = {i["name"]: i["created"] for i in res["imports"]}
-    for name in ("FB_ProbeSt", "FB_ProbeFbd", "FB_ProbeLd", "FB_ProbeCfc", "FB_ProbePcfc", "PRG_ProbeSfc", "FB_ProbeOop2"):
+    for name in (
+        "FB_ProbeSt",
+        "FB_ProbeFbd",
+        "FB_ProbeLd",
+        "FB_ProbeCfc",
+        "FB_ProbePcfc",
+        "PRG_ProbeSfc",
+        "FB_ProbeOop2",
+    ):
         assert name in created[name], name
     assert created["FB_ProbeIl"] == []  # IL = N: стандартный <IL> молча пропускается
     bad = {m["object"] for m in res["build"]["messages"] if m["severity"] == "Error"}

@@ -95,6 +95,6 @@ def test_gvl_mixed_retain_persistent() -> None:
 def test_type_xml() -> None:
     assert B.type_xml("BOOL") == "<BOOL />"
     assert B.type_xml("STRING(20)") == '<string length="20" />'
-    assert B.type_xml("ARRAY[0..3] OF INT").startswith("<array><dimension lower=\"0\" upper=\"3\" />")
+    assert B.type_xml("ARRAY[0..3] OF INT").startswith('<array><dimension lower="0" upper="3" />')
     assert B.type_xml("TON") == '<derived name="TON" />'
     assert B.type_xml("TIME_OF_DAY") == "<TOD />"

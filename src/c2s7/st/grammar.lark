@@ -1,0 +1,244 @@
+// Грамматика ST CODESYS 3.5 (LALR). Комментарии и прагмы убирает препроцессор (st/parser.py)
+// до разбора, сохраняя позиции; здесь их нет. Ключевые слова — без учёта регистра.
+//
+// Точки входа: pou_text (заголовок + VAR + тело), stmts (только тело), type_text (TYPE ... END_TYPE),
+// gvl_text (секции VAR_GLOBAL), expr_text (выражение), type_ref_text (тип переменной из PLCopen).
+
+pou_text: pou_header var_block* stmts pou_end?
+stmts: stmt*
+type_text: type_decl
+gvl_text: var_block*
+expr_text: expr
+type_ref_text: type_ref
+init_text: initializer
+
+pou_end: END_POU
+
+// ---------------- заголовки ----------------
+
+pou_header: PROGRAM NAME                                                   -> h_program
+          | FUNCTION_BLOCK modifier* NAME extends_one? implements?        -> h_fb
+          | FUNCTION NAME (":" type_ref)?                                   -> h_function
+          | METHOD modifier* NAME (":" type_ref)?                           -> h_method
+          | PROPERTY modifier* NAME ":" type_ref                            -> h_property
+          | INTERFACE NAME extends_many?                                    -> h_interface
+          | ACTION NAME ":"?                                                -> h_action
+
+modifier: MODIFIER
+extends_one: EXTENDS qname
+extends_many: EXTENDS qname ("," qname)*
+implements: IMPLEMENTS qname ("," qname)*
+qname: NAME ("." NAME)*
+
+// ---------------- переменные ----------------
+
+var_block: VAR_KIND var_qual* var_decl* END_VAR
+var_qual: VAR_QUAL
+var_decl: NAME ("," NAME)* location? ":" type_ref (":=" initializer)? ";"
+location: AT DIRECT_ADDR
+
+?type_ref: qname                                                   -> named_type
+         | ARRAY "[" dim ("," dim)* "]" OF type_ref                -> array_type
+         | POINTER TO type_ref                                     -> pointer_type
+         | REFERENCE TO type_ref                                   -> reference_type
+         | STRING_KW ( "(" expr ")" | "[" expr "]" )?              -> string_type
+         | qname "(" expr ".." expr ")"                            -> subrange_type
+
+dim: expr ".." expr
+   | "*"                                                           -> dim_star
+
+?initializer: expr
+            | "[" init_elem ("," init_elem)* "]"                   -> array_init
+            | "(" field_init ("," field_init)* ")"                 -> struct_init
+
+init_elem: initializer                                             -> init_plain
+         | INT_LIT "(" initializer? ")"                            -> init_repeat
+field_init: ARGNAME ":=" initializer
+
+// ---------------- типы (DUT) ----------------
+
+type_decl: TYPE NAME extends_one? ":" type_body ";"? END_TYPE
+?type_body: STRUCT var_decl* END_STRUCT                            -> struct_def
+          | UNION var_decl* END_UNION                              -> union_def
+          | "(" enum_value ("," enum_value)* ")" qname? (":=" expr)?   -> enum_def
+          | type_ref (":=" initializer)?                            -> alias_def
+enum_value: ARGNAME ":=" expr                                      -> enum_value_init
+          | NAME                                                    -> enum_value_plain
+
+// ---------------- операторы ----------------
+
+?stmt: plain_stmt
+     | LABEL_DEF ":"                                                -> label_stmt
+
+case_stmts: plain_stmt*
+
+?plain_stmt: ARGNAME ":=" assign_rhs ";"                          -> assign_simple
+           | variable ":=" expr ";"                                -> assign_complex
+           | variable SET_OP expr ";"                              -> assign_op
+           | call ";"                                              -> call_stmt
+           | IF expr THEN stmts elsif_part* else_part? END_IF      -> if_stmt
+           | CASE expr OF case_elem+ case_else? END_CASE           -> case_stmt
+           | FOR ARGNAME ":=" expr TO expr (BY expr)? DO stmts END_FOR    -> for_stmt
+           | WHILE expr DO stmts END_WHILE                         -> while_stmt
+           | REPEAT stmts UNTIL expr END_REPEAT                    -> repeat_stmt
+           | EXIT ";"                                              -> exit_stmt
+           | CONTINUE ";"                                          -> continue_stmt
+           | RETURN ";"                                            -> return_stmt
+           | JMP NAME ";"                                          -> jmp_stmt
+           | ";"                                                   -> empty_stmt
+
+assign_rhs: ARGNAME ":=" assign_rhs                                -> chain_assign
+          | expr                                                    -> rhs_expr
+
+elsif_part: ELSIF expr THEN stmts
+else_part: ELSE stmts
+case_elem: case_label ("," case_label)* ":" case_stmts
+case_label: case_value
+          | case_value ".." case_value                              -> case_range
+?case_value: CASE_LABEL_NAME                                        -> case_name
+           | INT_LIT                                                -> lit_int
+           | "-" INT_LIT                                            -> case_neg_int
+           | BASED_INT                                              -> lit_based
+           | TYPED_LIT                                              -> lit_typed
+           | ENUM_LIT                                               -> lit_enum
+case_else: ELSE case_stmts
+
+// ---------------- выражения ----------------
+
+?expr: or_expr
+?or_expr: xor_expr
+        | or_expr OR_OP xor_expr                                   -> binop
+?xor_expr: and_expr
+         | xor_expr XOR and_expr                                   -> binop
+?and_expr: eq_expr
+         | and_expr AND_OP eq_expr                                 -> binop
+?eq_expr: cmp_expr
+        | eq_expr EQ_OP cmp_expr                                   -> binop
+?cmp_expr: add_expr
+         | cmp_expr CMP_OP add_expr                                -> binop
+?add_expr: mul_expr
+         | add_expr ADD_OP mul_expr                                -> binop
+?mul_expr: unary
+         | mul_expr MUL_OP unary                                   -> binop
+?unary: power
+      | "-" unary                                                  -> neg
+      | "+" unary                                                  -> plus
+      | NOT unary                                                  -> not_
+?power: primary
+      | primary POW unary                                          -> binop
+
+?primary: literal
+        | variable
+        | call
+        | DIRECT_ADDR                                              -> direct_addr
+        | "(" expr ")"
+
+call: variable "(" [arg ("," arg)*] ")"
+?arg: expr                                                         -> pos_arg
+    | ARGNAME ":=" expr                                            -> named_arg
+    | ARGNAME "=>" expr?                                           -> out_arg
+    | NOT ARGNAME "=>" expr                                        -> out_arg_neg
+
+?variable: NAME                                                    -> var_name
+         | variable "." NAME                                       -> var_member
+         | variable "." INT_LIT                                    -> var_bit
+         | variable "[" expr ("," expr)* "]"                       -> var_index
+         | variable "^"                                            -> var_deref
+
+?literal: INT_LIT                                                  -> lit_int
+        | BASED_INT                                                -> lit_based
+        | REAL_LIT                                                 -> lit_real
+        | TIME_LIT                                                 -> lit_time
+        | DATE_LIT                                                 -> lit_date
+        | TOD_LIT                                                  -> lit_tod
+        | DT_LIT                                                   -> lit_dt
+        | TYPED_LIT                                                -> lit_typed
+        | ENUM_LIT                                                 -> lit_enum
+        | STRING_LIT                                               -> lit_string
+        | WSTRING_LIT                                              -> lit_wstring
+        | TRUE                                                     -> lit_true
+        | FALSE                                                    -> lit_false
+
+// ---------------- терминалы ----------------
+
+PROGRAM: "PROGRAM"i
+FUNCTION_BLOCK: "FUNCTION_BLOCK"i
+FUNCTION: "FUNCTION"i
+METHOD: "METHOD"i
+PROPERTY: "PROPERTY"i
+INTERFACE: "INTERFACE"i
+ACTION: "ACTION"i
+END_POU.3: /END_(PROGRAM|FUNCTION_BLOCK|FUNCTION|METHOD|PROPERTY|INTERFACE|ACTION)\b/i
+MODIFIER.3: /(PUBLIC|PRIVATE|PROTECTED|INTERNAL|ABSTRACT|FINAL)\b/i
+EXTENDS: "EXTENDS"i
+IMPLEMENTS: "IMPLEMENTS"i
+VAR_KIND.3: /VAR(_INPUT|_OUTPUT|_IN_OUT|_GLOBAL|_TEMP|_STAT|_EXTERNAL|_INST|_CONFIG)?\b/i
+VAR_QUAL.3: /(RETAIN|PERSISTENT|CONSTANT|NON_RETAIN)\b/i
+END_VAR: "END_VAR"i
+AT: "AT"i
+ARRAY: "ARRAY"i
+OF: "OF"i
+POINTER: "POINTER"i
+REFERENCE: "REFERENCE"i
+TO: "TO"i
+STRING_KW.3: /W?STRING\b/i
+TYPE: "TYPE"i
+END_TYPE: "END_TYPE"i
+STRUCT: "STRUCT"i
+END_STRUCT: "END_STRUCT"i
+UNION: "UNION"i
+END_UNION: "END_UNION"i
+IF: "IF"i
+THEN: "THEN"i
+ELSIF: "ELSIF"i
+ELSE: "ELSE"i
+END_IF: "END_IF"i
+CASE: "CASE"i
+END_CASE: "END_CASE"i
+FOR: "FOR"i
+BY: "BY"i
+DO: "DO"i
+END_FOR: "END_FOR"i
+WHILE: "WHILE"i
+END_WHILE: "END_WHILE"i
+REPEAT: "REPEAT"i
+UNTIL: "UNTIL"i
+END_REPEAT: "END_REPEAT"i
+EXIT: "EXIT"i
+CONTINUE: "CONTINUE"i
+RETURN: "RETURN"i
+JMP: "JMP"i
+NOT: "NOT"i
+XOR: "XOR"i
+TRUE: "TRUE"i
+FALSE: "FALSE"i
+
+OR_OP.2: /OR_ELSE\b/i | /OR\b/i
+AND_OP.2: /AND_THEN\b/i | /AND\b/i | "&"
+EQ_OP.1: "<>" | "="
+CMP_OP: "<=" | ">=" | "<" | ">"
+ADD_OP: "+" | "-"
+MUL_OP.2: "*" | "/" | /MOD\b/i
+POW.3: "**"
+SET_OP.2: /S=/i | /R=/i | /REF=/i
+
+ARGNAME.2: /[A-Za-z_][A-Za-z0-9_]*(?=\s*(:=|=>))/
+CASE_LABEL_NAME.2: /[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*(?=\s*(:(?!=)|,|\.\.))/
+LABEL_DEF.2: /[A-Za-z_][A-Za-z0-9_]*(?=\s*:(?!=))/
+NAME: /[A-Za-z_][A-Za-z0-9_]*/
+
+DIRECT_ADDR.4: /%[IQM][XBWDL]?(\d+(\.\d+)*|\*)/i
+TIME_LIT.5: /(TIME|T|LTIME|LT)#[+-]?[0-9][0-9a-z_.]*/i
+DATE_LIT.5: /(DATE|D)#\d+-\d+-\d+/i
+TOD_LIT.5: /(TIME_OF_DAY|TOD|LTOD)#\d+:\d+(:\d+(\.\d+)?)?/i
+DT_LIT.5: /(DATE_AND_TIME|DT|LDT)#\d+-\d+-\d+-\d+:\d+(:\d+(\.\d+)?)?/i
+TYPED_LIT.5: /(BOOL|BYTE|WORD|DWORD|LWORD|SINT|INT|DINT|LINT|USINT|UINT|UDINT|ULINT|REAL|LREAL)#((2|8|16)#[0-9A-Fa-f_]+|[+-]?\d[\d_]*(\.\d[\d_]*)?([eE][+-]?\d+)?|TRUE|FALSE)/i
+ENUM_LIT.4: /[A-Za-z_][A-Za-z0-9_]*#[A-Za-z_][A-Za-z0-9_]*/
+BASED_INT.3: /(2#[01_]+|8#[0-7_]+|16#[0-9A-Fa-f_]+)/
+REAL_LIT.2: /\d[\d_]*\.\d[\d_]*([eE][+-]?\d+)?|\d[\d_]*[eE][+-]?\d+/
+INT_LIT: /\d[\d_]*/
+STRING_LIT: /'([^'$\n]|\$.)*'/
+WSTRING_LIT: /"([^"$\n]|\$.)*"/
+
+%import common.WS
+%ignore WS
