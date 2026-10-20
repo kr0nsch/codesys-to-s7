@@ -48,8 +48,8 @@ def term(kit: Path) -> None:
     venv = REPO / ".venv" / "Scripts"
     env = dict(os.environ, PATH=str(venv) + os.pathsep + os.environ.get("PATH", ""), PYTHONIOENCODING="utf-8")
     cmds = [
-        "c2s7 inventory corpus/zarechnaya.xml",
-        "c2s7 analyze corpus/zarechnaya.xml --cpu s7-1200 --tia V19 --fail-on never",
+        "c2s7 inventory corpus/zarechnaya.xml | Select-Object -First 3",
+        "c2s7 analyze corpus/zarechnaya.xml --cpu s7-1200 --tia V19 --fail-on never | Select-Object -First 4",
         "c2s7 migrate corpus/zarechnaya.xml --out out/zar --cpu s7-1500 --tia V21",
         "c2s7 migrate tests/fixtures/s7-to-codesys --out out/ring",
         "c2s7 verify out/ring --roundtrip",
