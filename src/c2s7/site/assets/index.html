@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>codesys-to-s7 · просмотр миграции</title>
+<meta name="description" content="CODESYS 3.5 → Siemens S7-1200/1500: ST, LD, FBD, CFC, SFC, IL → SCL, LAD/FBD (SimaticML), теги, OB и отчёт с классом каждой конструкции.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="kicker">01 · миграция</span>
+    <h1>codesys-to-s7</h1>
+    <p class="sub">CODESYS 3.5 → Siemens S7-1200/1500 (TIA Portal) · c2s7 <span id="ver"></span></p>
+  </div>
+  <nav class="cases" id="cases" aria-label="Кейсы"></nav>
+  <div class="cpu" role="group" aria-label="CPU цели">
+    <button data-cpu="s7-1500" class="on">S7-1500</button>
+    <button data-cpu="s7-1200">S7-1200</button>
+  </div>
+</header>
+<section class="summary">
+  <p id="about"></p>
+  <div class="counters" id="counters"></div>
+  <p class="effort" id="effort"></p>
+  <p class="verdict" id="verdict"></p>
+  <p class="note">Импорт в TIA Portal автором не проверен: TIA у автора нет. Проверено — XSD V19/V21, свой валидатор, обратный перевод s7-to-codesys, c2s7.sim и CODESYS Control Win.</p>
+</section>
+<main class="work" id="work">
+  <aside class="tree"><h2>POU</h2><ul id="pous"></ul></aside>
+  <section class="pane"><h2 id="src-title">CODESYS</h2><div id="src" class="code"></div></section>
+  <section class="pane"><h2 id="tgt-title">TIA Portal</h2><div id="tgt" class="code"></div></section>
+  <aside class="cards"><h2>Находки</h2><div id="findings"></div></aside>
+</main>
+<nav class="tabs" id="tabs" aria-label="Разделы">
+  <button data-tab="equiv" class="on">Эквивалентность</button>
+  <button data-tab="traps">Галерея ловушек</button>
+  <button data-tab="obs">OB и задачи</button>
+  <button data-tab="tags">Теги и адреса</button>
+  <button data-tab="probe">Пробник</button>
+  <button data-tab="files">Файлы</button>
+</nav>
+<section class="tab" id="tab"></section>
+<footer>
+  <p>Схемы цели построены c2s7, это не снимки TIA. Классы: auto — без потерь и с тестом; review — адаптер, расхождение описано; verify — поведение S7 не подтверждено, есть проба; manual — заготовка и шаг вручную; impossible — в профиле CPU нет средства. Часы — модель, не калибрована.</p>
+  <p>Проект не связан с компаниями ОВЕН, Прософт-Системы, РегЛаб, Siemens AG и CODESYS GmbH; названия продуктов — товарные знаки их владельцев.</p>
+</footer>
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>

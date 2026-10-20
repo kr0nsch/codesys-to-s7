@@ -1,0 +1,470 @@
+{
+ "first_divergence": {
+  "block": "Main",
+  "category": "ring.lossy",
+  "rule": "ring.lossy.arg_dropped",
+  "where": "тело [38]"
+ },
+ "limitation": "Кольцо доказывает согласованность c2s7 и s7conv (один автор), а не компиляцию в TIA Portal: общие ошибки могут погаситься. Противовесы — эталонные модели сценариев, CODESYS Control Win как эталон поведения, XSD и свой валидатор SimaticML. Импорт в TIA не проверен.",
+ "objects_in": 44,
+ "oracles": [
+  "c2s7.sim",
+  "stsim"
+ ],
+ "regime": "R1",
+ "ring": {
+  "blocks": [
+   {
+    "divergences": [],
+    "kind": "ORGANIZATION_BLOCK",
+    "name": "Cyclic interrupt",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_AlarmPT101",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_Backwash",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_Dosing",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_FQ101",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_FT101",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_Hmi",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_LegacyTlg",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_Logger",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_LS201",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_LT101",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_Mode",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_P101",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_P102",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_P103",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_PIC101",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_Plant",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_PT101",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_PumpAlt",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_RampSP",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_RecipeActive",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_Telegram",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "DATA_BLOCK",
+    "name": "DB_XV201",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "ORGANIZATION_BLOCK",
+    "name": "Diagnostic error interrupt",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_AlarmDelay",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_AnalogIn",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_BatchCounter",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_Debounce",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_EventLogger",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_LegacyTelegram",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_ModeSelect",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_Motor",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_PIController",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_PumpAlternation",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_Ramp",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_Sequencer",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_Totalizer",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION_BLOCK",
+    "name": "FB_Valve",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "FUNCTION",
+    "name": "FC_Statistics",
+    "status": "match"
+   },
+   {
+    "divergences": [
+     {
+      "category": "ring.lossy",
+      "note": "s7-to-codesys docs/MAPPING.md, «Не поддерживается»: Variant, Any (параметр не перенесён — MIGRATION-TODO)",
+      "rule": "ring.lossy.arg_dropped",
+      "where": "тело [38]"
+     },
+     {
+      "category": "ring.lossy",
+      "note": "s7-to-codesys docs/MAPPING.md, «Не поддерживается»: Variant, Any (параметр не перенесён — MIGRATION-TODO)",
+      "rule": "ring.lossy.arg_dropped",
+      "where": "тело [39]"
+     }
+    ],
+    "kind": "ORGANIZATION_BLOCK",
+    "name": "Main",
+    "status": "diverged"
+   },
+   {
+    "divergences": [],
+    "kind": "ORGANIZATION_BLOCK",
+    "name": "Startup",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "TYPE",
+    "name": "UDT_AnalogCfg",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "TYPE",
+    "name": "UDT_DeviceStatus",
+    "status": "match"
+   },
+   {
+    "divergences": [],
+    "kind": "TYPE",
+    "name": "UDT_DosingRecipe",
+    "status": "match"
+   }
+  ],
+  "bug": 0,
+  "by_kind": {
+   "DATA_BLOCK": {
+    "matched": 22,
+    "total": 22
+   },
+   "FUNCTION": {
+    "matched": 1,
+    "total": 1
+   },
+   "FUNCTION_BLOCK": {
+    "matched": 14,
+    "total": 14
+   },
+   "ORGANIZATION_BLOCK": {
+    "matched": 3,
+    "total": 4
+   },
+   "TYPE": {
+    "matched": 3,
+    "total": 3
+   }
+  },
+  "categories": {
+   "ring.lossy.arg_dropped": 2
+  },
+  "issues": [],
+  "lossy": 2,
+  "mvp": true,
+  "norm": 0,
+  "normalization_rules": {
+   "norm.addr_tag": "абсолютный адрес и тег с этим адресом — одно и то же",
+   "norm.case": "имена без учёта регистра, без # и кавычек",
+   "norm.comments": "комментарии, атрибуты переменных и пробелы не сравниваются",
+   "norm.db_init": "начальные значения DB по значению: объявление и BEGIN",
+   "norm.empty": "пустые операторы не сравниваются",
+   "norm.header": "TITLE, AUTHOR, FAMILY, VERSION и атрибуты блока не сравниваются (кроме S7_Optimized_Access)",
+   "norm.literal": "литералы по значению (T#5S = T#5s = 5000 мс, 16#FF = 255)",
+   "norm.region": "REGION раскрывается в операторы",
+   "norm.sections": "секции одного вида сливаются, объявления «a, b : T» раскрываются",
+   "norm.string_default": "String = String[254], WString = WString[254]"
+  },
+  "raw": []
+ },
+ "s7conv": "2285760c1c99ce4218d5356c75e93111828f8e3b",
+ "source": {
+  "blocks": {
+   "FB_AlarmDelay": {
+    "rows": 55,
+    "rows_ok": 55,
+    "rows_skipped": 0,
+    "scenarios": 8,
+    "scenarios_ok": 8,
+    "scenarios_skipped": 0
+   },
+   "FB_AnalogIn": {
+    "rows": 47,
+    "rows_ok": 47,
+    "rows_skipped": 0,
+    "scenarios": 6,
+    "scenarios_ok": 6,
+    "scenarios_skipped": 0
+   },
+   "FB_Motor": {
+    "rows": 52,
+    "rows_ok": 52,
+    "rows_skipped": 0,
+    "scenarios": 7,
+    "scenarios_ok": 7,
+    "scenarios_skipped": 0
+   },
+   "FB_PumpAlternation": {
+    "rows": 31,
+    "rows_ok": 31,
+    "rows_skipped": 0,
+    "scenarios": 6,
+    "scenarios_ok": 6,
+    "scenarios_skipped": 0
+   },
+   "FB_Sequencer": {
+    "rows": 42,
+    "rows_ok": 42,
+    "rows_skipped": 0,
+    "scenarios": 6,
+    "scenarios_ok": 6,
+    "scenarios_skipped": 0
+   },
+   "FB_Totalizer": {
+    "rows": 36,
+    "rows_ok": 36,
+    "rows_skipped": 0,
+    "scenarios": 6,
+    "scenarios_ok": 6,
+    "scenarios_skipped": 0
+   }
+  },
+  "failures": [],
+  "total": {
+   "rows": 263,
+   "rows_ok": 263,
+   "rows_skipped": 0,
+   "scenarios": 39,
+   "scenarios_ok": 39,
+   "scenarios_skipped": 0
+  }
+ },
+ "st_prime": {
+  "blocks": {
+   "FB_AlarmDelay": {
+    "rows": 55,
+    "rows_ok": 55,
+    "rows_skipped": 0,
+    "scenarios": 8,
+    "scenarios_ok": 8,
+    "scenarios_skipped": 0
+   },
+   "FB_AnalogIn": {
+    "rows": 47,
+    "rows_ok": 47,
+    "rows_skipped": 0,
+    "scenarios": 6,
+    "scenarios_ok": 6,
+    "scenarios_skipped": 0
+   },
+   "FB_Motor": {
+    "rows": 52,
+    "rows_ok": 52,
+    "rows_skipped": 0,
+    "scenarios": 7,
+    "scenarios_ok": 7,
+    "scenarios_skipped": 0
+   },
+   "FB_PumpAlternation": {
+    "rows": 31,
+    "rows_ok": 31,
+    "rows_skipped": 0,
+    "scenarios": 6,
+    "scenarios_ok": 6,
+    "scenarios_skipped": 0
+   },
+   "FB_Sequencer": {
+    "rows": 42,
+    "rows_ok": 42,
+    "rows_skipped": 0,
+    "scenarios": 6,
+    "scenarios_ok": 6,
+    "scenarios_skipped": 0
+   },
+   "FB_Totalizer": {
+    "rows": 36,
+    "rows_ok": 36,
+    "rows_skipped": 0,
+    "scenarios": 6,
+    "scenarios_ok": 6,
+    "scenarios_skipped": 0
+   }
+  },
+  "failures": [],
+  "total": {
+   "rows": 263,
+   "rows_ok": 263,
+   "rows_skipped": 0,
+   "scenarios": 39,
+   "scenarios_ok": 39,
+   "scenarios_skipped": 0
+  }
+ },
+ "stsim": {
+  "failures": {},
+  "note": "stsim s7-to-codesys @ 2285760c, семантика F_TRIG S7",
+  "passed": 39,
+  "suites": 6,
+  "total": 39
+ },
+ "tool": "c2s7 0.1.0"
+}
