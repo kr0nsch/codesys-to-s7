@@ -1,7 +1,7 @@
 """CDS_SR/CDS_RS против Standard.SR/RS в CODESYS Control Win (ТЗ M7, КТ-B).
 
 Блоки CodesysCompat написаны на SCL; в CODESYS исполняется их обратный перевод s7conv (ST′ из
-корпуса, build/corpus/<cpu>/out/roundtrip/st_prime). Программа PRG_SrCheck за один цикл прогоняет
+выхода `migrate` корпуса, build/compat-out). Программа PRG_SrCheck за один цикл прогоняет
 обе пары по одной последовательности (SET, RESET), включая SET = RESET = 1 из обоих состояний,
 и пишет выходы в массивы; хост сравнивает поэлементно.
 
@@ -28,9 +28,18 @@ OUT = REPO / "docs" / "data" / "compat-controlwin.json"
 
 
 def st_prime_dir() -> Path:
-    d = REPO / "build" / "corpus" / "s7-1500" / "out" / "roundtrip" / "st_prime" / "src" / "POUs"
+    """ST′ блоков CodesysCompat: migrate корпуса → s7conv (клон @ 2285760c) в build/compat-out."""
+    from c2s7.api import run_migrate
+    from c2s7.convert.core import Options
+    from c2s7.verify import s7conv_clone as SC
+    from c2s7.verify.roundtrip import run_s7conv
+
+    out = REPO / "build" / "compat-out"
+    run_migrate(REPO / "corpus" / "zarechnaya.xml", out, Options())
+    rt = run_s7conv(out, SC.check(SC.default_dir(REPO)))
+    d = rt.st_prime / "src" / "POUs"
     if not (d / "CDS_SR").exists():
-        raise SystemExit("нет ST′ CDS_SR: сначала python tools/corpus/corpus_check.py")
+        raise SystemExit("в ST′ нет CDS_SR")
     return d
 
 
