@@ -1,7 +1,7 @@
 """Пороги покрытия (ТЗ §8): строки ≥ 85 %, ветви ≥ 75 % — всего и отдельно для c2s7/emit/simaticml и c2s7/sim.
 
-    python -m pytest --cov=c2s7 --cov-branch --cov-report=json:build/coverage.json
-    python tools/check_coverage.py build/coverage.json
+python -m pytest --cov=c2s7 --cov-branch --cov-report=json:build/coverage.json
+python tools/check_coverage.py build/coverage.json
 """
 
 from __future__ import annotations
